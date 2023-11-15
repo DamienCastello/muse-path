@@ -22,18 +22,24 @@ $routeName = request()->route()->getName();
     <a class="navbar-brand" href="{{ route('product.index') }}">SANDBOX STORE</a>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-          <li @class(["nav-item", 'active' => str_starts_with($routeName, 'product.')])>
-            <a href="{{ route('product.index') }}">Accueil<span class="sr-only"></span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">PAGE 1</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">PAGE 2</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">PAGE 3</a>
-          </li>
+            <a @class(["nav-link", "active" => str_starts_with($routeName, 'product.')]) href="{{ route('product.create') }}">Ajouter Produit<span class="sr-only"></span></a>
+
+
+
+            <!--
+            <li @class(["nav-item", 'active' => str_starts_with($routeName, 'product.')])>
+              <a href="{{ route('product.index') }}">Ajouter Produit<span class="sr-only"></span></a>
+            </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">PAGE 1</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">PAGE 2</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">PAGE 3</a>
+              </li>
+            -->
         </ul>
       </div>
   </div>
@@ -41,6 +47,11 @@ $routeName = request()->route()->getName();
 
 
     <div class="container">
+        @if(session('success'))
+            <div class="alert alert-success" >
+                {{ session('success') }}
+            </div>
+        @endif
         @yield('content')
     </div>
 </body>

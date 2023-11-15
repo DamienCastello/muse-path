@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormPostRequest;
 use App\Models\Product;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -24,25 +24,28 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $product = new Product();
+        return view('product.create', [
+            'product' => $product
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(FormPostRequest $request)
     {
-        //
+        $product = Product::create($request->validated());
+        return redirect()->route('product.show', ['slug' => $product->slug, 'product' => $product->id])->with('success', 'Le produit a bien été sauvegardé');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $slug, string $id, Product $product): RedirectResponse | View
+    public function show(string $slug, Product $product): RedirectResponse | View
     {
-        $product = Product::findOrFail($id);
         if ($product->slug != $slug){
-            return to_route('product.show', ['slug' => $product->slug, 'id' => $product->id]);
+            return to_route('product.show', ['slug' => $product->slug, 'product' => $product->id]);
         }
         return view('product.show', [
             'product' => $product
@@ -52,17 +55,21 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit($productId)
     {
-        //
+       $product = Product::query()->where('id', $productId)->first();
+        return view('product.edit', [
+            'product' => $product
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(FormPostRequest $request, Product $product)
     {
-        //
+        $product->update($request->validated());
+        return redirect()->route('product.show', ['slug' => $product->slug, 'product' => $product->id])->with('success', 'Le produit a bien été modifié');
     }
 
     /**
