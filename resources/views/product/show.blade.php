@@ -1,7 +1,6 @@
 @extends('base')
 
 @section('title', $product->title)
-
 @section('content')
         <article>
             <h1>{{$product->title}}</h1>
@@ -9,6 +8,6 @@
         </article>
 
         <p>
-            <a href="{{ route('product.edit', ['slug' => $product->slug, 'product' => $product->id]) }}" class="btn btn-primary">Modifier le produit</a>
+            <a href="{{ route('product.edit', ['slug' => $product->slug, 'product' => $product]) }}" class="btn btn-primary">Modifier le produit</a>
         </p>
 @endsection

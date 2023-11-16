@@ -20,7 +20,7 @@ Route::prefix("/product")->name('product.')->controller(\App\Http\Controllers\Pr
     Route::get('/new', 'create')->name('create');
     Route::post('/new', 'store');
     Route::get('/{product}/edit', 'edit')->name('edit');
-    Route::post('/{product}/edit', 'update');
+    Route::patch('/{product}/edit', 'update');
     // Slug
     Route::get('/{slug}-{product}', 'show')->where([
         "product" => "[0-9]+",

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FormPostRequest;
+use App\Models\Category;
 use App\Models\Product;
+use App\Models\Tag;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 
@@ -15,7 +17,7 @@ class ProductController extends Controller
     public function index(): View
     {
         return view('product.index', [
-            'products' => Product::paginate(3)
+            'products' => Product::with('tags', 'category')->paginate(3)
         ]);
     }
 
@@ -26,7 +28,9 @@ class ProductController extends Controller
     {
         $product = new Product();
         return view('product.create', [
-            'product' => $product
+            'product' => $product,
+            'categories' => Category::select('id', 'name')->get(),
+            'tags' => Tag::select('id', 'name')->get()
         ]);
     }
 
@@ -55,11 +59,14 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($productId)
+    public function edit($productID)
     {
-       $product = Product::query()->where('id', $productId)->first();
+       $product = Product::query()->where('id', $productID)->first();
         return view('product.edit', [
-            'product' => $product
+            'product' => $product,
+            'categories' => Category::select('id', 'name')->get(),
+            'tags' => Tag::select('id', 'name')->get()
+
         ]);
     }
 
@@ -69,6 +76,7 @@ class ProductController extends Controller
     public function update(FormPostRequest $request, Product $product)
     {
         $product->update($request->validated());
+        $product->tags()->sync($request->validated('tags'));
         return redirect()->route('product.show', ['slug' => $product->slug, 'product' => $product->id])->with('success', 'Le produit a bien été modifié');
     }
 

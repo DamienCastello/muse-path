@@ -26,7 +26,9 @@ class FormPostRequest extends FormRequest
             'title' => ['required', 'min:8'],
             'slug' => ['required', 'min:8', 'regex:/^[a-z0-9\-]+$/', Rule::unique('products')/* -> like table in DB */->ignore($this->route()->parameter('product')) ],
             'description' => ['required'],
-            'price' => ['numeric', 'nullable']
+            'price' => ['numeric', 'nullable'],
+            'category_id' => ['required', 'exists:categories,id'],
+            'tags' => ['array', 'exists:tags,id']
         ];
     }
 
