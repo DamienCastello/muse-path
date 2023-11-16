@@ -12,9 +12,18 @@
     @foreach($products as $product)
         <article>
             <h2>{{$product->title}}</h2>
+            <p class="small">
+                Catégorie: <strong>{{ $product->category->name }}</strong>
+                @if(!$product->tags->isEmpty())
+                    Tags:
+                    @foreach($product->tags as $tag)
+                        <span class="badge badge-secondary">{{$tag->name}}</span>
+                    @endforeach
+                @endif
+            </p>
             <p>{{$product->description}}</p>
             <p>
-                <a href="{{ route('product.show', ['slug' => $product->slug, 'product' => $product->id]) }}" class="btn btn-primary">Lire la suite</a>
+                <a href="{{ route('product.show', ['slug' => $product->slug, 'product' => $product]) }}" class="btn btn-primary">Lire la suite</a>
             </p>
         </article>
     @endforeach

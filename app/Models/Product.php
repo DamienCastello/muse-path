@@ -16,6 +16,15 @@ class Product extends Model
         'title',
         'slug',
         'description',
-        'price'
+        'price',
+        'category_id'
     ];
+
+    public function category() {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function tags() {
+        return $this->belongsToMany(Tag::class);
+    }
 }
