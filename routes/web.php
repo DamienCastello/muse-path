@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,53 +13,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('auth.login');
+Route::delete('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('auth.logout');
+Route::post('/login', [App\Http\Controllers\AuthController::class, 'doLogin']);
 
 
 Route::prefix("/product")->name('product.')->controller(\App\Http\Controllers\ProductController::class)->group(function () {
-
     Route::get("/", 'index')->name('index');
-
+    Route::get('/new', 'create')->name('create')->middleware('auth');
+    Route::post('/new', 'store')->middleware('auth');
+    Route::get('/{product}/edit', 'edit')->name('edit')->middleware('auth');
+    Route::patch('/{product}/edit', 'update')->middleware('auth');
     // Slug
-    Route::get('/{slug}-{id}', 'show')->where([
-        "id" => "[0-9]+",
+    Route::get('/{slug}-{product}', 'show')->where([
+        "product" => "[0-9]+",
         "slug" => "[a-z0-9\-]+"
     ])->name("show");
 });
 
-/* ---------------------------------------------------------------------------------------------------------------
-Sandbox
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-// LARAVEL TRAIN ROUTE
-// Get param
-Route::get('/page/param', function (Request $request) {
-    return [
-        "name" => $request->input("name", "John Doe"),
-        "all" => $request->all()
-    ];
-});
-
-Route::prefix("/page")->group(function () {
-    // FORMAT LINK ROUTE WITH PARAM
-    Route::get("/", function (Request $request) {
-        return [
-            "Link" => \route("page.slug.show", ["slug" => "jackpot", "id" => 777])
-        ];
-    })->name("index");
-
-    // Slug
-    Route::get('/{slug}-{id}', function (string $slug, string $id, Request $request) {
-        return [
-            "slug" => $slug,
-            "id" => $id,
-            "name" => $request->input("name")
-        ];
-    })->where([
-        "id" => "[0-9]+",
-        "slug" => "[a-z0-9\-]+"
-    ])->name("show");
-});
- ---------------------------------------------------------------------------------------------------------------*/

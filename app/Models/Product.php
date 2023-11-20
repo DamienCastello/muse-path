@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @mixin IdeHelperProduct
+ */
 class Product extends Model
 {
     use HasFactory;
@@ -13,6 +16,15 @@ class Product extends Model
         'title',
         'slug',
         'description',
-        'price'
+        'price',
+        'category_id'
     ];
+
+    public function category() {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function tags() {
+        return $this->belongsToMany(Tag::class);
+    }
 }
