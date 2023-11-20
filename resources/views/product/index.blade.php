@@ -27,6 +27,7 @@
             </p>
         </article>
     @endforeach
-
-    {{$products->links()}}
+    <div class="fixed-bottom">
+        {{$products->links()}}
+    </div>
 @endsection
