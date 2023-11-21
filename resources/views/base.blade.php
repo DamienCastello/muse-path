@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>    <style>
         .container{
-            margin-top: 4rem;
+            margin-top: 7rem;
         }
     </style>
 </head>
@@ -29,7 +29,7 @@ $routeName = request()->route()->getName();
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse d-flex justify-content-between w-100" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a @class(["nav-link", "active" => str_starts_with($routeName, 'product.')]) href="{{ route('product.create') }}">Ajouter Produit<span class="sr-only"></span></a>
@@ -38,7 +38,7 @@ $routeName = request()->route()->getName();
         <div class="navbar-nav mb-lg-0">
             <div class="flex-column">
                 @auth
-                    <span class="text-warning">{{ \Illuminate\Support\Facades\Auth::user()->name }}</span>
+                    <p class="text-warning">{{ \Illuminate\Support\Facades\Auth::user()->name }}</p>
                     <form action="{{ route('auth.logout') }}" method="post" class="nav-item">
                         @method('delete')
                         @csrf
