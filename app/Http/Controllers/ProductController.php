@@ -6,8 +6,10 @@ use App\Http\Requests\FormPostRequest;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Tag;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Intervention\Image\Facades\Image as ResizeImage;
 
 class ProductController extends Controller
 {
@@ -17,7 +19,7 @@ class ProductController extends Controller
     public function index(): View
     {
         return view('product.index', [
-            'products' => Product::with('tags', 'category')->paginate(3)
+            'products' => Product::with('tags', 'category')->orderBy('created_at', 'desc')->paginate(3)
         ]);
     }
 
@@ -39,7 +41,7 @@ class ProductController extends Controller
      */
     public function store(FormPostRequest $request)
     {
-        $product = Product::create($request->validated());
+        $product = Product::create($this->extractData(new Product(), $request));
         return redirect()->route('product.show', ['slug' => $product->slug, 'product' => $product->id])->with('success', 'Le produit a bien été sauvegardé');
     }
 
@@ -75,9 +77,33 @@ class ProductController extends Controller
      */
     public function update(FormPostRequest $request, Product $product)
     {
-        $product->update($request->validated());
+        $product->update($this->extractData($product, $request));
         $product->tags()->sync($request->validated('tags'));
         return redirect()->route('product.show', ['slug' => $product->slug, 'product' => $product->id])->with('success', 'Le produit a bien été modifié');
+    }
+
+    private function extractData(Product $product, FormPostRequest $request):array
+    {
+        $path = public_path('storage\\product\\');
+        $name = time() . '.' . $request->image->extension();
+        ResizeImage::make($request->file('image'))
+            ->resize(300, 200)
+            ->save($path . $name);
+
+        $image = $request->validated();;
+        //$image->name = $name;
+        //$image->save();
+        $img = ResizeImage::make('storage\\product\\'.$name);
+
+        if($image === null) {
+            return $image;
+        }
+        if($product->image) {
+            Storage::disk('public')->delete($product->image);
+        }
+
+        $data['image'] = 'product/'.$img->basename;
+        return $data;
     }
 
     /**

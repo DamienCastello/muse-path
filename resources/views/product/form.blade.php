@@ -1,4 +1,4 @@
-<form action="" method="post" class="vstack gap-2">
+<form action="" method="post" class="vstack gap-2" enctype="multipart/form-data">
     @csrf
     @method($product ? 'PATCH' : 'POST')
 
@@ -7,6 +7,13 @@
         <input type="text" id="title" name="title" placeholder="Titre du produit" class="form-control" value="{{old('title', $product->title)}}"/>
         @error('title')
         {{ $message }}
+        @enderror
+    </div>
+    <div class="form-group">
+        <label for="image">Image</label>
+        <input type="file" id="image" name="image" placeholder="Image du produit" class="form-control"/>
+        @error('image')
+        {{$message}}
         @enderror
     </div>
     <div class="form-group">
@@ -56,7 +63,7 @@
         {{ $message }}
         @enderror
     </div>
-    <button type="submit">
+    <button type="submit" class="btn btn-primary mb-2">
         @if($product->id)
             Modifier
         @else

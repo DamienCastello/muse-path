@@ -24,6 +24,7 @@ class FormPostRequest extends FormRequest
     {
         return [
             'title' => ['required', 'min:8'],
+            'image'=>['image','max:4000'],
             'slug' => ['required', 'min:8', 'regex:/^[a-z0-9\-]+$/', Rule::unique('products')/* -> like table in DB */->ignore($this->route()->parameter('product')) ],
             'description' => ['required'],
             'price' => ['numeric', 'nullable'],
