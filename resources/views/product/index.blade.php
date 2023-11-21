@@ -20,13 +20,16 @@
             <h2>{{$product->title}}</h2>
             <p class="small">
                 Catégorie: <strong>{{ $product->category->name }}</strong>
-                @if(!$product->tags->isEmpty())
-                    Tags:
-                    @foreach($product->tags as $tag)
-                        <span class="badge badge-secondary">{{$tag->name}}</span>
-                    @endforeach
-                @endif
+                <span class="ml-3">
+                    @if(!$product->tags->isEmpty())
+                        Tags:
+                        @foreach($product->tags as $tag)
+                            <span class="badge badge-secondary">{{$tag->name}}</span>
+                        @endforeach
+                    @endif
+                </span>
             </p>
+
             <div class="flex-col justify-content-center">
                 @if($product->image)
                     <img style="object-fit:cover;border: 3px ridge grey;border-radius:10px;box-shadow:5px 2px 5px black;" src="{{$product->imageUrl()}}" alt="product_illustration">

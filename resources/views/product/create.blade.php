@@ -5,5 +5,5 @@
 @section('content')
     <h1>Création d'un Produit</h1>
 
-@include('product.form')
+    @include('product.form')
 @endsection

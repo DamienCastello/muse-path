@@ -32,7 +32,8 @@ class ProductController extends Controller
         return view('product.create', [
             'product' => $product,
             'categories' => Category::select('id', 'name')->get(),
-            'tags' => Tag::select('id', 'name')->get()
+            'tags' => Tag::select('id', 'name')->get(),
+            'post' => true,
         ]);
     }
 
@@ -67,8 +68,8 @@ class ProductController extends Controller
         return view('product.edit', [
             'product' => $product,
             'categories' => Category::select('id', 'name')->get(),
-            'tags' => Tag::select('id', 'name')->get()
-
+            'tags' => Tag::select('id', 'name')->get(),
+            'post' => false,
         ]);
     }
 
@@ -84,25 +85,27 @@ class ProductController extends Controller
 
     private function extractData(Product $product, FormPostRequest $request):array
     {
-        $path = public_path('storage\\product\\');
-        $name = time() . '.' . $request->image->extension();
-        ResizeImage::make($request->file('image'))
-            ->resize(300, 200)
-            ->save($path . $name);
-
-        $image = $request->validated();;
-        //$image->name = $name;
-        //$image->save();
-        $img = ResizeImage::make('storage\\product\\'.$name);
+        $image = $request->validated('image');
+        $data = $request->validated();
 
         if($image === null) {
-            return $image;
-        }
-        if($product->image) {
-            Storage::disk('public')->delete($product->image);
-        }
+            return $data;
+        } else {
+            $path = public_path('storage\\product\\');
+            $name = time() . '.' . $request->image->extension();
+            ResizeImage::make($request->file('image'))
+                ->resize(300, 200)
+                ->save($path . $name);
 
-        $data['image'] = 'product/'.$img->basename;
+            $img = ResizeImage::make('storage\\product\\'.$name);
+
+
+            if($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            $data['image'] = 'product/'.$img->basename;
+        }
         return $data;
     }
 
@@ -111,6 +114,8 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product = Product::find($product->id);
+        $product->delete();
+        return to_route('product.index')->with('success', 'Le produit a bien été supprimé');
     }
 }
