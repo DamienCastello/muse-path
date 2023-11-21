@@ -1,68 +1,37 @@
 <form action="" method="post" class="vstack gap-2" enctype="multipart/form-data">
     @csrf
-    @method($product ? 'PATCH' : 'POST')
+    @method($post ? 'POST' : 'PATCH')
 
-    <div class="form-group">
-        <label for="title">Titre</label>
-        <input type="text" id="title" name="title" placeholder="Titre du produit" class="form-control" value="{{old('title', $product->title)}}"/>
-        @error('title')
-        {{ $message }}
-        @enderror
-    </div>
-    <div class="form-group">
-        <label for="image">Image</label>
-        <input type="file" id="image" name="image" placeholder="Image du produit" class="form-control"/>
-        @error('image')
-        {{$message}}
-        @enderror
-    </div>
-    <div class="form-group">
-        <label for="slug">Slug</label>
-        <input type="text" id="slug" name="slug" class="form-control" placeholder="Slug du produit" value="{{old('slug', $product->slug)}}" />
-        @error('slug')
-        {{ $message }}
-        @enderror
-    </div>
-    <div class="form-group">
-        <label for="description">Description</label>
-        <textarea id="description" name="description" class="form-control" placeholder="Description du produit">{{old('description', $product->description)}}</textarea>
-        @error('description')
-        {{ $message }}
-        @enderror
-    </div>
-    <div class="form-group">
-        <label for="price">Price</label>
-        <input type="number" id="price" name="price" placeholder="0" class="form-control" value="{{old('price', $product->price)}}"/>
-        @error('price')
-        {{ $message }}
-        @enderror
-    </div>
-    <div class="form-group">
-        <label for="category">Catégorie</label>
-        <select id="category" name="category_id" class="form-control">
-            <option value="">Sélectionner une catégorie</option>
-            @foreach($categories as $category)
-                <option @selected(old('category_id', $product->category_id) == $category->id) value="{{$category->id}}">{{$category->name}}</option>
-            @endforeach
-        </select>
-        @error('category_id')
-        {{ $message }}
-        @enderror
-    </div>
-    @php
-    $tagsIds = $product->tags()->pluck('id');
-    @endphp
-    <div class="form-group">
-        <label for="tag">Tags</label>
-        <select id="tag" name="tags[]" class="form-control" multiple>
-            @foreach($tags as $tag)
-                <option @selected($tagsIds->contains($tag->id)) value="{{$tag->id}}">{{$tag->name}}</option>
-            @endforeach
-        </select>
-        @error('tags')
-        {{ $message }}
-        @enderror
-    </div>
+    @include('shared.input',['label' => 'Titre', 'name' => 'title', 'placeholder' => 'Titre du produit', 'oldValue' => old('title', $product->title)])
+        <div class="row">
+            <div class="col">
+                    @include('shared.input',['label' => 'Slug', 'name' => 'slug', 'placeholder' => 'Slug du produit', 'oldValue' => old('slug', $product->slug)])
+                    @include('shared.input',['type' => 'file', 'label' => 'Image d\'illustration', 'name' => 'image'])
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                    @include('shared.input',['label' => 'Description', 'name' => 'description', 'placeholder' => 'Description du produit', 'oldValue' => old('description', $product->description), 'area' => true])
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                    @include('shared.input',['type' => 'number', 'label' => 'Prix', 'name' => 'price', 'placeholder' => '0', 'oldValue' => old('price', $product->price)])
+                    <!-- TODO: Implement like table in db & checkbox like in this blade -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                    @include('shared.select',['entities' => $categories, 'label' => 'Catégorie', 'optionPlaceholder' => 'une catégorie', 'id' => 'category', 'name' => 'category_id', 'oldValue' => old('category', $product->category_id)])
+
+                    @php
+                    $tagsIds = $product->tags()->pluck('id');
+                    @endphp
+
+                    @include('shared.select',['entities' => $tags, 'multiple' => true, 'pluckedIds' => $tagsIds, 'label' => 'Tags', 'optionPlaceholder' => 'un ou plusieurs tags', 'id' => 'tag', 'name' => 'tags[]', 'oldValue' => old('tags', $product->tags)])
+            </div>
+        </div>
+
     <button type="submit" class="btn btn-primary mb-2">
         @if($product->id)
             Modifier
