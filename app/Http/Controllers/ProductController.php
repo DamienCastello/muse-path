@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FormPostRequest;
+use App\Http\Requests\SearchProductsRequest;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Tag;
@@ -16,10 +17,14 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(SearchProductsRequest $request): View
     {
+        $query = Product::query();
+        if($request->validated('title')){
+            $query = $query->where('title', 'like', "%{$request->validated('title')}%");
+        }
         return view('product.index', [
-            'products' => Product::with('tags', 'category')->orderBy('created_at', 'desc')->paginate(3)
+            'products' => $query->with('tags', 'category')->orderBy('created_at', 'desc')->paginate(3)
         ]);
     }
 
