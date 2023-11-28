@@ -24,12 +24,14 @@ class FormPostRequest extends FormRequest
     {
         return [
             'title' => ['required', 'min:8'],
+            'resource_author' => ['nullable'],
             'image'=>['image','max:4000'],
-            'slug' => ['required', 'min:8', 'regex:/^[a-z0-9\-]+$/', Rule::unique('products')/* -> like table in DB */->ignore($this->route()->parameter('product')) ],
+            'slug' => ['required', 'min:8', 'regex:/^[a-z0-9\-]+$/', Rule::unique('resources')/* -> like table in DB */->ignore($this->route()->parameter('resource')) ],
             'description' => ['required'],
             'price' => ['numeric', 'nullable'],
             'category_id' => ['required', 'exists:categories,id'],
-            'tags' => ['array', 'exists:tags,id']
+            'tags' => ['array', 'exists:tags,id'],
+            'user_likes' => ['nullable']
         ];
     }
 

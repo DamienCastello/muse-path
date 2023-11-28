@@ -7,14 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * @mixin IdeHelperProduct
+ * @mixin IdeHelperResource
  */
-class Product extends Model
+class Resource extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'title',
+        'resource_author',
         'image',
         'slug',
         'description',
@@ -28,6 +29,10 @@ class Product extends Model
 
     public function tags() {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function users() {
+        return $this->belongsToMany(User::class);
     }
 
     public function imageUrl(): string {

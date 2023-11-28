@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->timestamps();
         });
-        Schema::create('product_tag', function (Blueprint $table) {
-            $table->foreignIdFor(\App\Models\Product::class)->constrained()->cascadeOnDelete();
+        Schema::create('resource_tag', function (Blueprint $table) {
+            $table->foreignIdFor(\App\Models\Resource::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(\App\Models\Tag::class)->constrained()->cascadeOnDelete();
-            $table->primary(['product_id', 'tag_id']);
+            $table->primary(['resource_id', 'tag_id']);
         });
     }
 
@@ -28,7 +28,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_tag');
+        Schema::dropIfExists('resource_tag');
         Schema::dropIfExists('tags');
     }
 };
