@@ -17,7 +17,12 @@
                 <p>
                     <a href="{{ route('resource.admin.edit', ['slug' => $resource->slug, 'resource' => $resource]) }}" class="btn btn-primary">Modifier la ressource</a>
                 </p>
+                <form action="{{ route('resource.admin.delete', ['slug' => $resource->slug, 'resource' => $resource]) }}" method="post">
+                    @method('delete')
+                    @csrf
+                    <button type="submit" class="btn btn-danger">Supprimer la ressource</button>
+                </form>
+
             @endauth
-            <!-- TODO: move edit & delete functionalities in admin panel (admin.resource.destroy)-->
         </div>
 @endsection
