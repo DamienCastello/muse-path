@@ -13,9 +13,11 @@
         </article>
 
         <div class="d-flex justify-content-between">
-            <p>
-                <a href="{{ route('resource.edit', ['slug' => $resource->slug, 'resource' => $resource]) }}" class="btn btn-primary">Modifier la ressource</a>
-            </p>
+            @auth
+                <p>
+                    <a href="{{ route('resource.admin.edit', ['slug' => $resource->slug, 'resource' => $resource]) }}" class="btn btn-primary">Modifier la ressource</a>
+                </p>
+            @endauth
             <!-- TODO: move edit & delete functionalities in admin panel (admin.resource.destroy)-->
         </div>
 @endsection

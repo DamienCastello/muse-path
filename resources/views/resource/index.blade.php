@@ -57,7 +57,8 @@
                     <a href="{{ route('resource.show', ['slug' => $resource->slug, 'resource' => $resource]) }}" class="btn btn-primary">Lire la suite</a>
                 </p>
 
-                <form action="{{ route('resource.like', ['resource' => $resource]) }}" method="post">
+                @auth
+                <form action="{{ route('resource.admin.like', ['resource' => $resource]) }}" method="post">
                     @csrf
                     @method('POST')
                     <div class="form-check form-switch">
@@ -67,6 +68,7 @@
                         {{$value ? 'Unlike' : 'Like' }} <3
                     </button>
                 </form>
+                @endauth
             </div>
 
         </article>

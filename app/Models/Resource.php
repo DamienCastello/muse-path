@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -12,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 class Resource extends Model
 {
     use HasFactory;
+    //use SoftDeletes;
 
     protected $fillable = [
         'title',
@@ -37,5 +40,9 @@ class Resource extends Model
 
     public function imageUrl(): string {
         return Storage::url($this->image);
+    }
+
+    public function scopeRecent(Builder $builder /* Can get optional params to handle conditions below */): Builder {
+        return $builder->orderBy('created_at', 'desc');
     }
 }
