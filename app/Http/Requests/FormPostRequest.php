@@ -31,7 +31,8 @@ class FormPostRequest extends FormRequest
             'price' => ['numeric', 'nullable'],
             'category_id' => ['required', 'exists:categories,id'],
             'tags' => ['array', 'exists:tags,id'],
-            'user_likes' => ['nullable']
+            'user_likes' => ['nullable'],
+            'link' => ['nullable','url']
         ];
     }
 

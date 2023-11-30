@@ -5,6 +5,11 @@
         <article>
             <div class="d-flex flex-column justify-content-center align-items-center mb-3">
                 <h1 class="mb-3">{{$resource->title}}</h1>
+                @if($resource->link)
+                <p>
+                    <a href="{{$resource->link}}" class="nav-link">Site de la ressource</a>
+                </p>
+                @endif
                 @if($resource->image)
                     <img style="object-fit:cover;border: 3px ridge grey;border-radius:10px;box-shadow:5px 2px 5px black;" src="{{$resource->imageUrl()}}" alt="resource_illustration">
                 @endif
