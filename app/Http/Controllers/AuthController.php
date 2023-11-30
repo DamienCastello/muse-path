@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -35,5 +36,13 @@ class AuthController extends Controller
     public function logout() {
         Auth::logout();
         return to_route('auth.login');
+    }
+
+    // Cast example
+    protected function password(): Attribute {
+        return Attribute::make(
+            get: fn(?string $value) => '',
+            set: fn(string $value) => Hash::make($value)
+        );
     }
 }
