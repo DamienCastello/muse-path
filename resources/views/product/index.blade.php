@@ -4,18 +4,22 @@
 
 @section('content')
 
-        <div class="row">
-          <div class="col-6 offset-4">
-              <h1>Liste des produits</h1>
-          </div>
-          <div class="col-2">
-              <p>
-                  <a href="{{ route('product.create') }}" class="btn btn-primary">Ajouter un produit</a>
-              </p>
-          </div>
-        </div>
+    <h1 class="text-center">Liste des produits</h1>
 
-    @foreach($products as $product)
+    <div class="row mb-5">
+        <div class="col-4 offset-8">
+            <form action="" method="get" >
+                <div class="d-flex flex-column align-items-end">
+                    @include('shared.input', ['name' => 'title', 'placeholder' => "Mot clef"])
+                    <button type="submit" class="btn btn-primary">Rechercher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    @forelse($products as $product)
         <article>
             <h2>{{$product->title}}</h2>
             <p class="small">
@@ -40,7 +44,9 @@
                 <a href="{{ route('product.show', ['slug' => $product->slug, 'product' => $product]) }}" class="btn btn-primary">Lire la suite</a>
             </p>
         </article>
-    @endforeach
+    @empty
+        <p class="text-center">Aucun produit ne correspond à la recherche</p>
+    @endforelse
     <div class="fixed-bottom">
         {{$products->links()}}
     </div>
