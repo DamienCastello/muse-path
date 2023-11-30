@@ -11,13 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('resources', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('resource_author');
             $table->string('slug')->unique();
             $table->longText('description');
             $table->integer('price');
+            $table->string('link');
             $table->timestamps();
+        });
+
+        Schema::create('resource_user', function (Blueprint $table) {
+            $table->foreignIdFor(\App\Models\User::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\Resource::class)->constrained()->cascadeOnDelete();
+            $table->primary(['user_id', 'resource_id']);
         });
     }
 
@@ -26,6 +34,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('resource_user');
+        Schema::dropIfExists('resources');
     }
 };

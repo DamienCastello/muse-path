@@ -3,11 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     public function login() {
+    /*
+        User::create([
+            'name' => 'Maga',
+            'email' => 'Maga@fake.com',
+            'password' => Hash::make('0000')
+        ]);
+    */
         return view('auth.login');
     }
 
@@ -15,7 +25,7 @@ class AuthController extends Controller
         $credentials = $request->validated();
         if(Auth::attempt($credentials)){
             $request->session()->regenerate();
-            return redirect()->intended(route('product.index'));
+            return redirect()->intended(route('resource.index'));
         }
         return to_route('auth.login')->withErrors([
             'email' => 'Informations de connexion invalides',
@@ -26,5 +36,13 @@ class AuthController extends Controller
     public function logout() {
         Auth::logout();
         return to_route('auth.login');
+    }
+
+    // Cast example
+    protected function password(): Attribute {
+        return Attribute::make(
+            get: fn(?string $value) => '',
+            set: fn(string $value) => Hash::make($value)
+        );
     }
 }

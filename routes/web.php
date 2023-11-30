@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ResouceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,17 +19,30 @@ Route::delete('/logout', [App\Http\Controllers\AuthController::class, 'logout'])
 Route::post('/login', [App\Http\Controllers\AuthController::class, 'doLogin']);
 
 
-Route::prefix("/product")->name('product.')->controller(\App\Http\Controllers\ProductController::class)->group(function () {
+Route::prefix("/resource")->name('resource.')->controller(ResouceController::class)->group(function () {
+    $idRegex = "[0-9]+";
+    $slugRegex = "[a-z0-9\-]+";
+
     Route::get("/", 'index')->name('index');
+
+        // Slug
+    Route::get('/{slug}-{resource}', 'show')->where([
+        "resource" => $idRegex,
+        "slug" => $slugRegex
+    ])->name("show");
+
+Route::prefix("admin")->name("admin.")->group(function () {
     Route::get('/new', 'create')->name('create')->middleware('auth');
     Route::post('/new', 'store')->middleware('auth');
-    Route::get('/{product}/edit', 'edit')->name('edit')->middleware('auth');
-    Route::patch('/{product}/edit', 'update')->middleware('auth');
-    // Slug
-    Route::get('/{slug}-{product}', 'show')->where([
-        "product" => "[0-9]+",
-        "slug" => "[a-z0-9\-]+"
-    ])->name("show");
+    Route::get('/{resource}/edit', 'edit')->name('edit')->middleware('auth');
+    Route::post('/{resource}/like', 'like')->name('like')->middleware('auth');
+    Route::patch('/{resource}/edit', 'update')->name('update')->middleware('auth');
+    Route::delete('/{resource}/delete', 'destroy')->name('delete')->middleware('auth');
+
+
 });
+
+});
+
 
 

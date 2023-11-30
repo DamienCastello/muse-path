@@ -13,7 +13,7 @@ class Tag extends Model
         'name'
     ];
 
-    public function products() {
-        return $this->belongsToMany(Product::class);
+    public function resources() {
+        return $this->belongsToMany(Resource::class);
     }
 }
