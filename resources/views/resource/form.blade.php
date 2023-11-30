@@ -15,6 +15,7 @@
         <div class="row">
             <div class="col">
                     @include('shared.input',['label' => 'Description', 'name' => 'description', 'placeholder' => 'Description de la ressource', 'oldValue' => old('description', $resource->description), 'area' => true])
+                    @include('shared.input',['label' => 'Lien vers le site source', 'name' => 'link', 'placeholder' => 'https://xferrecords.com/', 'oldValue' => old('link', $resource->link)])
             </div>
         </div>
         <div class="row">

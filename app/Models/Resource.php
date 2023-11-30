@@ -23,6 +23,7 @@ class Resource extends Model
         'slug',
         'description',
         'price',
+        'link',
         'category_id'
     ];
 
