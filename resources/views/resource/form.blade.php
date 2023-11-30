@@ -4,7 +4,7 @@
     @if($errors->any())
         {{ implode('', $errors->all('<div>:message</div>')) }}
     @endif
-
+    <x-input label="Titre" name="title" placeholder="Titre de la ressource" :oldValue="old('title', $resource->title)" />
     @include('shared.input',['label' => 'Titre', 'name' => 'title', 'placeholder' => 'Titre de la ressource', 'oldValue' => old('title', $resource->title)])
         <div class="row">
             <div class="col">
