@@ -64,7 +64,7 @@
                     <div class="form-check form-switch">
                         <input class="invisible" type="hidden" value="{{$value}}" name="like" role="switch" id="like">
                     </div>
-                    <button type="submit" @class(["btn", "btn-success" => !$value, "btn-danger" => $value]) @error('like') is-invalid @enderror">
+                    <button type="submit" @class(["btn", $value ? 'btn-danger' : 'btn-success']) @error('like') is-invalid @enderror>
                         {{$value ? 'Unlike' : 'Like' }} <3
                     </button>
                 </form>

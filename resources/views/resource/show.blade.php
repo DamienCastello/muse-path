@@ -30,4 +30,33 @@
 
             @endauth
         </div>
+
+
+        <div class="d-flex flex-column justify-content-center mt-2">
+            @auth
+
+                <form method="post">
+                    @method('post')
+                    @csrf
+                     <x-input label="Commentaire" name="comment" placeholder="Super merci !" area="{{true}}" :oldValue="old('comment'/* Get comment from pivot table comment $resource->comment */)"/>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-info">Poster le commentaire</button>
+                    </div>
+                </form>
+
+            @endauth
+
+        </div>
+        <!-- TODO: Set comment zone -->
+        <div class="d-flex justify-content-center mt-3">
+            <ul>
+                <li>
+                    commentaire 1
+                </li>
+                <li>
+                    commentaire 2
+                </li>
+            </ul>
+        </div>
+
 @endsection

@@ -43,14 +43,14 @@ $routeName = request()->route()->getName();
             <div class="flex-column">
                 @auth
                     <p class="text-warning">{{ \Illuminate\Support\Facades\Auth::user()->name }}</p>
-                    <form action="{{ route('auth.logout') }}" method="post" class="nav-item">
-                        @method('delete')
+                    <form action="{{ route('logout') }}" method="post" class="nav-item">
+                        @method('post')
                         @csrf
                         <button class="btn btn-info">Se déconnecter</button>
                     </form>
                 @endauth
                 @guest
-                        <a class="btn btn-info" href={{ route('auth.login') }}>Se connecter</a>
+                        <a class="btn btn-info" href={{ route('login') }}>Se connecter</a>
                 @endguest
             </div>
         </div>
