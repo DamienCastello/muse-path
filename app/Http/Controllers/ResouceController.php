@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CommentFormRequest;
 use App\Http\Requests\FormPostRequest;
 use App\Http\Requests\SearchResourcesRequest;
 use App\Models\Category;
+use App\Models\Comment;
+use Carbon\Carbon;
 use App\Models\Resource;
 use App\Models\Tag;
 use App\Models\User;
@@ -58,13 +61,50 @@ class ResouceController extends Controller
      */
     public function show(string $slug, Resource $resource): RedirectResponse|View
     {
+        $comments = Comment::query()->where('resource_id', '=', $resource->id)->with('user')->get();
+
+        $diffIntervals = [];
+        $now = Carbon::now();
+
+        foreach($comments as $comment){
+            $date = Carbon::parse($comment->updated_at);
+
+            if($date->diffInSeconds($now)) $diff = "Il y a ".$date->diffInSeconds($now)." seconde";
+            if($date->diffInMinutes($now)) $diff = "Il y a ".$date->diffInMinutes($now)." minute";
+            if($date->diffInHours($now)) $diff = "Il y a ".$date->diffInHours($now)." heure";
+            if($date->diffInDays($now)) $diff = "Il y a ".$date->diffInDays($now)." jour";
+            if($date->diffInMonths($now)) $diff = "Il y a ".$date->diffInMonths($now)." mois";
+            if($date->diffInYears($now)) $diff = "Il y a ".$date->diffInYears($now)." année";
+
+            if($diff > 1 && !str_contains($diff, "mois")){
+                $diff = $diff."s";
+            }
+
+            $diffIntervals[] = $diff;
+        }
+
         if ($resource->slug != $slug) {
             return to_route('resource.show', ['slug' => $resource->slug, 'resource' => $resource->id]);
         }
         return view('resource.show', [
             'resource' => $resource,
-            'users' => User::select('id')->get()
+            'users' => User::select('id')->get(),
+            'comments' => $comments,
+            'comment_elapsed_time' => $diffIntervals
         ]);
+    }
+
+    /**
+     * Store a newly created comment attached to resource.
+     */
+    public function comment(CommentFormRequest $request, string $slug, string $resourceID)
+    {
+        Comment::create(array_merge($request->validated(), [
+            'user_id' => Auth::user()->id,
+            'resource_id' => $resourceID
+        ]));
+
+        return redirect()->route('resource.show', ['slug' => $slug,  'resource' => $resourceID])->with('success', 'La ressource a bien été commentée');
     }
 
     /**
@@ -109,6 +149,7 @@ class ResouceController extends Controller
     {
         $image = $request->validated('image');
         $data = $request->validated();
+        //$data = $request->safe();
         $data['resource_author'] = Auth::user()->name;
         if ($request->method() === "PATCH" && $request->input('like') == 1) {
             $resource->users()->attach(Auth::user()->id);

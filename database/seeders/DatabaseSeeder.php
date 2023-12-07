@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\Resource;
 use App\Models\Tag;
 use App\Models\User;
@@ -62,7 +63,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'VST Serum',
             'resource_author' => 'John',
             'image' => 'resource/1701339481.jpg',
-            'slug' => 'vst-serum-1',
+            'slug' => 'vst-serum',
             'description' => 'Serum VST, c’est le nom d’un des meilleurs Plugins synthétiseurs du moment. Ce (micro) logiciel de musique offre de réelles fonctionnalités de créations inédites, permettant de composer rapidement avec une grande qualité sonore. Il est présent dans de très nombreuses compositions actuelles et, grâce à sa polyvalence extrême, il s’adapte à de nombreux genres musicaux.',
             'price' => 189,
             'category_id' => 1,
@@ -73,7 +74,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'Formation mastering acid',
             'resource_author' => 'Maga',
             'image' => null,
-            'slug' => 'formation-mastering-acid-2',
+            'slug' => 'formation-mastering-acid',
             'description' => 'Le guide complet pour apprendre à masteriser tes tracks tekno, acid & hardcore.',
             'price' => 69,
             'category_id' => 4,
@@ -84,22 +85,28 @@ class DatabaseSeeder extends Seeder
             'title' => 'Infinite kick acid sample pack',
             'resource_author' => 'Maga',
             'image' => 'resource/1701339518.jpg',
-            'slug' => 'infinite-kick-acid-sample-pack-3',
+            'slug' => 'infinite-kick-acid-sample-pack',
             'description' => 'Serum VST, c’est le nom d’un des meilleurs Plugins synthétiseurs du moment. Ce (micro) logiciel de musique offre de réelles fonctionnalités de créations inédites, permettant de composer rapidement avec une grande qualité sonore. Il est présent dans de très nombreuses compositions actuelles et, grâce à sa polyvalence extrême, il s’adapte à de nombreux genres musicaux.',
             'price' => 19,
             'category_id' => 3,
             'link' => "https://skone.podia.com/"
         ]);
 
-        Resource::factory()->hasAttached(Tag::all())->hasAttached(User::find(1))->create([
+        Resource::factory()->hasAttached(Tag::all())->hasAttached(User::query()->find(1))->create([
             'title' => 'VST Sylenth',
             'resource_author' => 'John',
             'image' => null,
-            'slug' => 'vst-sylenth-4',
+            'slug' => 'vst-sylenth',
             'description' => 'Sylenth1 est créé par la société LennarDigital en 2006. Il s’agit du seul produit de la firme. C’est un synthé soustractif analogique virtuel avec 4 oscillateurs, des filtres et une section de modulation. Assez basique en somme, mais en approfondissant un peu, on trouve la raison de sa présence dans le podium de ce top.',
             'price' => 139,
             'category_id' => 1,
             'link' => "https://www.lennardigital.com/sylenth1/"
+        ]);
+
+        Comment::factory()->create([
+            'content' => 'Oh yeaaah',
+            'user_id' => 1,
+            'resource_id' => 1
         ]);
 
 
