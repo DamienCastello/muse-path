@@ -15,6 +15,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::prefix("/user")->name('user.')->controller(ProfileController::class)->group(function () {
+    $idRegex = "[0-9]+";
+
+    //Route::get("/", 'index')->name('index');
+
+    Route::get('/{user}/contact','contact')->where([
+        "user" => $idRegex,
+    ])->name("contact")->middleware(['auth', 'verified']);
+
+    Route::post('/{user}/contact','mail')->where([
+        "user" => $idRegex,
+    ])->name("mail")->middleware(['auth', 'verified']);
+
+});
+
 Route::prefix("/resource")->name('resource.')->controller(ResouceController::class)->group(function () {
     $idRegex = "[0-9]+";
     $slugRegex = "[a-z0-9\-]+";
@@ -24,7 +39,7 @@ Route::prefix("/resource")->name('resource.')->controller(ResouceController::cla
     Route::post('/{slug}-{resource}','comment')->where([
         "resource" => $idRegex,
         "slug" => $slugRegex
-    ])->name("comment")->middleware('auth');
+    ])->name("comment")->middleware(['auth', 'verified']);
 
 
     // Slug
@@ -34,14 +49,13 @@ Route::prefix("/resource")->name('resource.')->controller(ResouceController::cla
     ])->name("show");
 
 
-
     Route::prefix("/admin")->name("admin.")->group(function () {
-        Route::get('/new', 'create')->name('create')->middleware('auth');
-        Route::post('/new', 'store')->middleware('auth');
-        Route::get('/{resource}/edit', 'edit')->name('edit')->middleware('auth');
-        Route::post('/{resource}/like', 'like')->name('like')->middleware('auth');
-        Route::patch('/{resource}/edit', 'update')->name('update')->middleware('auth');
-        Route::delete('/{resource}/delete', 'destroy')->name('delete')->middleware('auth');
+        Route::get('/new', 'create')->name('create')->middleware(['auth', 'verified']);
+        Route::post('/new', 'store')->middleware(['auth', 'verified']);
+        Route::get('/{resource}/edit', 'edit')->name('edit')->middleware(['auth', 'verified']);
+        Route::post('/{resource}/like', 'like')->name('like')->middleware(['auth', 'verified']);
+        Route::patch('/{resource}/edit', 'update')->name('update')->middleware(['auth', 'verified']);
+        Route::delete('/{resource}/delete', 'destroy')->name('delete')->middleware(['auth', 'verified']);
     });
 
 });
@@ -52,7 +66,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 */
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

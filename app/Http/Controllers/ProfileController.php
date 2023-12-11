@@ -2,15 +2,72 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ContactRequest;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Mail\UserContactMail;
+use App\Models\Comment;
+use App\Models\Resource;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+        /**
+     * Display the specified user.
+     */
+    public function contact(User $user): RedirectResponse|View
+    {
+
+        return view('user.contact', [
+            'user' => $user,
+            'resource' => request()->resource
+        ]);
+    }
+
+    public function mail(ContactRequest $request, User $user): RedirectResponse|View
+    {
+        $resource = Resource::find(request()->resource);
+        $dest = User::query()->where('name', "=", $resource->resource_author)->first();
+        Mail::send(new UserContactMail($resource, ['message' => $request->validated('message'), 'dest' => $dest->email, 'sender' => Auth::user()]));
+
+        // TODO: Improve this code (duplicated with ResourceController)
+        $comments = Comment::query()->where('resource_id', '=', $resource->id)->with('user')->get();
+
+        $diffIntervals = [];
+        $now = Carbon::now();
+
+        foreach($comments as $comment){
+            $date = Carbon::parse($comment->updated_at);
+
+            if($date->diffInSeconds($now)) $diff = "Il y a ".$date->diffInSeconds($now)." seconde";
+            if($date->diffInMinutes($now)) $diff = "Il y a ".$date->diffInMinutes($now)." minute";
+            if($date->diffInHours($now)) $diff = "Il y a ".$date->diffInHours($now)." heure";
+            if($date->diffInDays($now)) $diff = "Il y a ".$date->diffInDays($now)." jour";
+            if($date->diffInMonths($now)) $diff = "Il y a ".$date->diffInMonths($now)." mois";
+            if($date->diffInYears($now)) $diff = "Il y a ".$date->diffInYears($now)." année";
+
+            if($diff > 1 && !str_contains($diff, "mois")){
+                $diff = $diff."s";
+            }
+
+            $diffIntervals[] = $diff;
+        }
+
+        return redirect()->route('resource.show', [
+            'user' => $user,
+            'slug' => $resource->slug,
+            'resource' => $resource,
+            'comments' => $comments,
+            'comment_elapsed_time' => $diffIntervals
+        ])->with('success', 'Le mail a bien été envoyé');
+    }
+
     /**
      * Display the user's profile form.
      */

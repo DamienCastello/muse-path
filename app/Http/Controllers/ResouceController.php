@@ -61,6 +61,7 @@ class ResouceController extends Controller
      */
     public function show(string $slug, Resource $resource): RedirectResponse|View
     {
+        // TODO: Improve this code (duplicated with ProfileController)
         $comments = Comment::query()->where('resource_id', '=', $resource->id)->with('user')->get();
 
         $diffIntervals = [];

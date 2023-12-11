@@ -3,7 +3,7 @@
 @section('title', $resource->title)
 @section('content')
         <article>
-            <div class="d-flex flex-column justify-content-center align-items-center mb-3">
+            <div class="d-flex flex-column justify-content-center align-items-center mb-1">
                 <h1 class="mb-3">{{$resource->title}}</h1>
                 @if($resource->link)
                 <p>
@@ -16,6 +16,20 @@
             </div>
             <p class="mt-3">{{$resource->description}}</p>
         </article>
+
+        @php
+            $user_resource_author = \App\Models\User::query()->where('name', '=', $resource->resource_author)->first();
+        @endphp
+
+        <div class="d-flex justify-content-start align-items-center mb-5">
+            <p class="font-italic mr-3">Ressource créée par : </p>
+            <a href="{{ route('user.contact', ['user' => $user_resource_author, 'resource' => $resource]) }}">
+                <img class="rounded-circle shadow-1-strong me-3 mr-3"
+                        src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(21).webp" alt="avatar" width="65"
+                        height="65" />
+            </a>
+            <p class="font-weight-bold">{{$resource->resource_author}}</p>
+        </div>
 
         <div class="d-flex justify-content-between">
             @auth
