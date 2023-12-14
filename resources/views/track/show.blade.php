@@ -4,15 +4,16 @@
 @section('content')
 <div class="d-flex justify-content-end w-100">
     <!-- TODO: implement modify -->
-        @if(Auth::user()->id === $track->user_id)
+        @can('delete', $track)
+            @if(Auth::user()->id === $track->user_id)
             <form action="{{ route('track.admin.delete', ['track' => $track]) }}"
                   method="post">
                 @method('delete')
                 @csrf
                 <button type="submit" class="btn btn-danger">Supprimer la track</button>
             </form>
-
-        @endif
+           @endif
+        @endcan
     </div>
     <figure class="d-flex flex-column justify-content-center align-items-center mw-25 p-4">
 
@@ -45,7 +46,7 @@
                 <form action="{{ route('track.feedback', ['track' => $track->id]) }}" method="post">
                     @method('post')
                     @csrf
-                    <h3>Feedback</h3>
+                    <h2>Donner un Feedback</h2>
                     <x-input name="message" placeholder="Nice ! 🔥🔥🔥" area="{{true}}"/>
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-info">Poster le feedback</button>
@@ -56,10 +57,10 @@
 
         </div>
     @endif
-
-    <div class="d-flex justify-content-center">
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        <h2>Liste des feedbacks</h2>
         <section>
-            <div class="container my-5 py-5 text-dark">
+            <div class="py-3 text-dark">
                 <div class="row d-flex justify-content-center">
                     <div class="col-md-11 col-lg-9 col-xl-7">
 

@@ -8,9 +8,11 @@
 
     <div class="row mb-5">
         <div class="col-4">
-            <div class="d-flex justify-content-center align-items-center h-100">
-                <a href="{{ route('track.admin.create') }}" class="btn btn-primary">Partager une track</a>
-            </div>
+            @can("create", App\Models\Track::class)
+                <div class="d-flex justify-content-center align-items-center h-100">
+                    <a href="{{ route('track.admin.create') }}" class="btn btn-primary">Partager une track</a>
+                </div>
+            @endcan
         </div>
         <div class="col-4 offset-4">
             <form action="" method="get">
@@ -27,10 +29,10 @@
             <div class="card col-3 m-1" style="background-color:#000000;
                     background-image:url('https://www.transparenttextures.com/patterns/brushed-alum.png');
                     border: 5px ridge grey;border-radius:30px;width: 18rem;">
+                <a style="color:#e7effd;text-decoration:none;font-weight: bold;font-size: 1.2rem;"
+                   href="{{ route("track.show", ['track' => $track->id]) }}">
+                    <div class="card-body">
 
-                <div class="card-body">
-                    <a style="color:#e7effd;text-decoration:none;font-weight: bold;font-size: 1.2rem;"
-                       href="{{ route("track.show", ['track' => $track->id]) }}">
                         @if($track->image)
                             <img style="border: 2px ridge black;border-radius:30px;" class="card-img-top"
                                  src="{{asset("storage/user-asset/$track->image")}}" alt="Card track preview">
@@ -42,17 +44,18 @@
                         @endif
 
                         {{$track->title}}
-                    </a>
-                    <div>
+
+                        <div>
                       <span class="mr-3">
                             @if(!$track->genres->isEmpty())
                               @foreach($track->genres as $genre)
                                   <span class="badge badge-secondary">{{$genre->name}}</span>
                               @endforeach
-                             @endif
+                          @endif
                       </span>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
 
         @empty

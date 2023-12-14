@@ -12,6 +12,7 @@ use App\Models\Genre;
 use App\Models\Track;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -24,12 +25,21 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Maga',
             'email' => 'maga@gmail.com',
+            'role' => 'artist',
             'password' => Hash::make('0000')
         ]);
 
         User::factory()->create([
             'name' => 'John',
             'email' => 'john.doe@gmail.com',
+            'role' => 'user',
+            'password' => Hash::make('0000')
+        ]);
+
+        User::factory()->create([
+            'name' => 'Gamma',
+            'email' => 'shinigamma@gmail.com',
+            'role' => 'admin',
             'password' => Hash::make('0000')
         ]);
 
@@ -86,7 +96,9 @@ class DatabaseSeeder extends Seeder
             'link' => "https://xferrecords.com/products/serum/"
         ]);
 
-        Resource::factory()->hasAttached(Tag::all())->hasAttached(User::find(2))->create([
+        // Attach random :
+        // Resource::factory()->hasAttached(Tag::all()->random(2))->hasAttached(User::find(2))->create([
+        Resource::factory()->hasAttached(Tag::query()->whereIn('id',[1,3,4])->get())->hasAttached(User::find(2))->create([
             'title' => 'Formation mastering acid',
             'resource_author' => 'Maga',
             'image' => null,
@@ -97,7 +109,7 @@ class DatabaseSeeder extends Seeder
             'link' => "https://skone.podia.com/"
         ]);
 
-        Resource::factory()->hasAttached(Tag::all())->hasAttached(User::find(2))->create([
+        Resource::factory()->hasAttached(Tag::query()->whereIn('id',[1,3])->get())->hasAttached(User::find(2))->create([
             'title' => 'Infinite kick acid sample pack',
             'resource_author' => 'Maga',
             'image' => 'resource/1701339518.jpg',
