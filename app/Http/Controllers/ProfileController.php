@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ContactRequestEvent;
 use App\Http\Requests\ContactRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Mail\UserContactMail;
@@ -34,7 +35,9 @@ class ProfileController extends Controller
     {
         $resource = Resource::find(request()->resource);
         $dest = User::query()->where('name', "=", $resource->resource_author)->first();
-        Mail::send(new UserContactMail($resource, ['message' => $request->validated('message'), 'dest' => $dest->email, 'sender' => Auth::user()]));
+        //ContactRequestEvent::dispatch($resource, ['message' => $request->validated('message'), 'dest' => $dest->email, 'sender' => Auth::user()]);
+        event(new ContactRequestEvent($resource, ['message' => $request->validated('message'), 'dest' => $dest->email, 'sender' => Auth::user()]));
+        //Mail::send(new UserContactMail($resource, ['message' => $request->validated('message'), 'dest' => $dest->email, 'sender' => Auth::user()]));
 
         // TODO: Improve this code (duplicated with ResourceController)
         $comments = Comment::query()->where('resource_id', '=', $resource->id)->with('user')->get();
