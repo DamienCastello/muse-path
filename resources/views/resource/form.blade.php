@@ -5,7 +5,6 @@
         {{ implode('', $errors->all('<div>:message</div>')) }}
     @endif
     <x-input label="Titre" name="title" placeholder="Titre de la ressource" :oldValue="old('title', $resource->title)"/>
-    @include('shared.input',['label' => 'Titre', 'name' => 'title', 'placeholder' => 'Titre de la ressource', 'oldValue' => old('title', $resource->title)])
     <div class="row">
         <div class="col">
             @include('shared.input',['label' => 'Slug', 'name' => 'slug', 'placeholder' => 'Slug de la ressource', 'oldValue' => old('slug', $resource->slug)])
@@ -25,13 +24,13 @@
     </div>
     <div class="row">
         <div class="col">
-            @include('shared.select',['entities' => $categories, 'label' => 'Catégorie', 'optionPlaceholder' => 'une catégorie', 'id' => 'category', 'name' => 'category_id', 'oldValue' => old('category', $resource->category_id)])
+            @include('shared.select',['entities' => $categories, 'label' => 'Catégorie', 'id' => 'category', 'name' => 'category_id', 'oldValue' => old('category', $resource->category_id)])
 
             @php
                 $tagsIds = $resource->tags()->pluck('id');
             @endphp
 
-            @include('shared.select',['entities' => $tags, 'multiple' => true, 'pluckedIds' => $tagsIds, 'label' => 'Tags', 'optionPlaceholder' => 'un ou plusieurs tags', 'id' => 'tag', 'name' => 'tags[]', 'oldValue' => old('tags', $resource->tags)])
+            @include('shared.select',['entities' => $tags, 'multiple' => true, 'pluckedIds' => $tagsIds, 'label' => 'Tags', 'id' => 'tag', 'name' => 'tags[]', 'oldValue' => old('tags', $resource->tags)])
         </div>
     </div>
 

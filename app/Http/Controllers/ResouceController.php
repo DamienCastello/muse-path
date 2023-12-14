@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentFormRequest;
-use App\Http\Requests\FormPostRequest;
+use App\Http\Requests\FormResourceRequest;
 use App\Http\Requests\SearchResourcesRequest;
 use App\Models\Category;
 use App\Models\Comment;
@@ -50,7 +50,7 @@ class ResouceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(FormPostRequest $request)
+    public function store(FormResourceRequest $request)
     {
         $resource = Resource::create($this->extractData(new Resource(), $request));
         return redirect()->route('resource.show', ['slug' => $resource->slug, 'resource' => $resource->id])->with('success', 'La ressource a bien été sauvegardé');
@@ -125,7 +125,7 @@ class ResouceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(FormPostRequest $request, Resource $resource)
+    public function update(FormResourceRequest $request, Resource $resource)
     {
         $resource->update($this->extractData($resource, $request));
         $resource->tags()->sync($request->validated('tags'));
@@ -146,7 +146,7 @@ class ResouceController extends Controller
         }
     }
 
-    private function extractData(Resource $resource, FormPostRequest $request): array
+    private function extractData(Resource $resource, FormResourceRequest $request): array
     {
         $image = $request->validated('image');
         $data = $request->validated();
