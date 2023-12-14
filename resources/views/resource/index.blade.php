@@ -65,7 +65,7 @@
                         <input class="invisible" type="hidden" value="{{$value}}" name="like" role="switch" id="like">
                     </div>
                     <button type="submit" @class(["btn", $value ? 'btn-danger' : 'btn-success']) @error('like') is-invalid @enderror>
-                        {{$value ? 'Unlike' : 'Like' }} <3
+                        {{$value ? 'Unlike </3' : 'Like <3' }}
                     </button>
                 </form>
                 @endauth

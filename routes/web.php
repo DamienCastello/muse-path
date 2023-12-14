@@ -3,6 +3,7 @@
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResouceController;
+use App\Models\Track;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -77,10 +78,10 @@ Route::prefix("/track")->name('track.')->controller(\App\Http\Controllers\TrackC
 
 
     Route::prefix("/admin")->name("admin.")->group(function () {
-        Route::get('/new', 'create')->name('create')->middleware(['auth', 'verified']);
+        Route::get('/new', 'create')->name('create')->can('create', Track::class)->middleware(['auth', 'verified']);
         Route::post('/new', 'store')->middleware(['auth', 'verified']);
         Route::post('/{track}/like', 'like')->name('like')->middleware(['auth', 'verified']);
-        Route::delete('/{track}/delete', 'destroy')->name('delete')->middleware(['auth', 'verified']);
+        Route::delete('/{track}/delete', 'destroy')->can('delete', Track::class)->name('delete')->middleware(['auth', 'verified']);
     });
 
 });
