@@ -9,18 +9,20 @@ Pour participer au projet, cloner le projet, choisir une tâche sur le trello, d
 Penser à mettre à jour le trello lorsque nécessaire et respecter le workflow mis en place.
 
 ## Fonctionnalités Cøre
+- Partager des ressources (pack de sample, articles, formation/tuto) gratuitement  OU payante
 - Permettre aux utilisateurs d'accéder à un board affichant les couts et les frais de la plateforme (si possible en temps réel)
 - Permettre aux utilisateurs d'effectuer un don
-- Partager des ressources (pack de sample, articles, formation/tuto) gratuitement  OU payante
 - Regrouper les packs de sample par types (son synthétisé, vocaux enregistrés, autre ?) et par classements qualitatif (critère à définir) afin de permettre aux utilisateurs de trouver plus facilement des ressources intéressantes pour composer
 - Permettre aux utilisateurs de partager leurs productions en cours de progression afin d'avoir des feedbacks d'autres artistes dans un canal approprié
 - Permettre aux utilisateurs de s'envoyer des messages entre eux et réagir au contenu dans l'application
 
 ## Stack
-Composer is used to manage dependencies
+Composer & npm are used to manage dependencies
 *requirements :*
 - composer >= 2.6.5
 - php >= 8.1
+- npm >= 8.1.2
+- node >= 16.15.1
 
 first add `.env` file in the root folder of project and complete following lines
 ```text
@@ -31,10 +33,9 @@ DB_PORT=3306
 ```
 after you can run
 ```shell
-composer install
-php artisan migrate
-launch seeds
-php artisan serve
+composer install && npm install && npm run build
+php artisan migrate:fresh --seed
+npm run dev && php artisan serve
 ```
 
 ## Rejoindre le projet
