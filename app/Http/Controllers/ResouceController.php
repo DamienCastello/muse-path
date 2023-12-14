@@ -99,9 +99,9 @@ class ResouceController extends Controller
         $resource = Resource::query()->with(['users'])->where('id', $resourceID)->first();
         $resource->users()->toggle(Auth::id());
         if ($resource->users->contains(Auth::user())) {
-            return to_route('resource.index')->with('success', 'La ressource a bien été ajouté à vos likes');
-        } else {
             return to_route('resource.index')->with('success', 'La ressource a bien été supprimé de vos likes');
+        } else {
+            return to_route('resource.index')->with('success', 'La ressource a bien été ajouté à vos likes');
         }
     }
 
@@ -142,6 +142,9 @@ class ResouceController extends Controller
     public function destroy(Resource $resource)
     {
         $resource = Resource::find($resource->id);
+        if ($resource->image) {
+            Storage::disk('public')->delete($resource->image);
+        }
         $resource->delete();
         return to_route('resource.index')->with('success', 'La ressource a bien été supprimé');
     }
