@@ -33,9 +33,19 @@ $routeName = request()->route()->getName();
     </button>
     <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
+        <li class="nav-item mr-3">
             @auth
             <a @class(["nav-link", "active" => str_starts_with($routeName, 'resource.')]) href="{{ route('resource.admin.create') }}">Ajouter Ressource<span class="sr-only"></span></a>
+            @endauth
+        </li>
+          <li class="nav-item mr-3">
+            @auth
+            <a @class(["nav-link", "active" => str_starts_with($routeName, 'share.')]) href="{{ route('track.index') }}">Partages<span class="sr-only"></span></a>
+            @endauth
+        </li>
+          <li class="nav-item mr-3">
+            @auth
+            <a @class(["nav-link", "active" => str_starts_with($routeName, 'feedback.')]) href="{{ route('feedback.index') }}">Feedbacks<span class="sr-only"></span></a>
             @endauth
         </li>
       </ul>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResouceController;
 use Illuminate\Support\Facades\Route;
@@ -58,6 +59,52 @@ Route::prefix("/resource")->name('resource.')->controller(ResouceController::cla
         Route::delete('/{resource}/delete', 'destroy')->name('delete')->middleware(['auth', 'verified']);
     });
 
+});
+
+Route::prefix("/track")->name('track.')->controller(\App\Http\Controllers\TrackController::class)->group(function () {
+    $idRegex = "[0-9]+";
+
+    Route::get("/", 'index')->name('index');
+
+    Route::get('/{track}','show')->where([
+        "track" => $idRegex,
+    ])->name("show");
+
+    Route::post('/{track}','feedback')->where([
+        "resource" => $idRegex,
+    ])->name("feedback")->middleware(['auth', 'verified']);
+
+
+
+    Route::prefix("/admin")->name("admin.")->group(function () {
+        Route::get('/new', 'create')->name('create')->middleware(['auth', 'verified']);
+        Route::post('/new', 'store')->middleware(['auth', 'verified']);
+        Route::post('/{track}/like', 'like')->name('like')->middleware(['auth', 'verified']);
+        Route::delete('/{track}/delete', 'destroy')->name('delete')->middleware(['auth', 'verified']);
+    });
+
+});
+
+Route::prefix("/feedback")->name('feedback.')->controller(FeedbackController::class)->group(function () {
+    $idRegex = "[0-9]+";
+
+    Route::get("/", 'index')->name('index');
+
+    Route::post('/{feedback}','show')->where([
+        "feedback" => $idRegex,
+    ])->name("show");
+
+
+    /*
+    Route::prefix("/admin")->name("admin.")->group(function () {
+        Route::get('/new', 'create')->name('create')->middleware(['auth', 'verified']);
+        Route::post('/new', 'store')->middleware(['auth', 'verified']);
+        Route::get('/{feedback}/edit', 'edit')->name('edit')->middleware(['auth', 'verified']);
+        Route::post('/{feedback}/like', 'like')->name('like')->middleware(['auth', 'verified']);
+        Route::patch('/{feedback}/edit', 'update')->name('update')->middleware(['auth', 'verified']);
+        Route::delete('/{feedback}/delete', 'destroy')->name('delete')->middleware(['auth', 'verified']);
+    });
+    */
 });
 
 /*

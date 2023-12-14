@@ -5,8 +5,11 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Category;
 use App\Models\Comment;
+use App\Models\Feedback;
 use App\Models\Resource;
 use App\Models\Tag;
+use App\Models\Genre;
+use App\Models\Track;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -59,6 +62,19 @@ class DatabaseSeeder extends Seeder
             'name' => 'Bass',
         ]);
 
+        Genre::factory()->create([
+            'name' => 'Acid',
+        ]);
+        Genre::factory()->create([
+            'name' => 'Trance',
+        ]);
+        Genre::factory()->create([
+            'name' => 'FrenchCore',
+        ]);
+        Genre::factory()->create([
+            'name' => 'Tribe',
+        ]);
+
         Resource::factory()->hasAttached(Tag::all())->hasAttached(User::find(1))->create([
             'title' => 'VST Serum',
             'resource_author' => 'John',
@@ -109,6 +125,19 @@ class DatabaseSeeder extends Seeder
             'resource_id' => 1
         ]);
 
+        Track::factory()->hasAttached(Genre::find(4))->create([
+            'title' => 'Baboulinet',
+            'image' => '1/image/1702464480.jpg',
+            'music' => '1/music/1702464480.mp3',
+            'description' => null,
+            'user_id' => 1,
+        ]);
+
+        Feedback::factory()->create([
+            'message' => '❤️',
+            'user_id' => 2,
+            'track_id' => 1
+        ]);
 
         /*
         Resource::factory()
