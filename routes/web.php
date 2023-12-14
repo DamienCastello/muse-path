@@ -21,13 +21,21 @@ Route::prefix("/resource")->name('resource.')->controller(ResouceController::cla
 
     Route::get("/", 'index')->name('index');
 
+    Route::post('/{slug}-{resource}','comment')->where([
+        "resource" => $idRegex,
+        "slug" => $slugRegex
+    ])->name("comment")->middleware('auth');
+
+
     // Slug
     Route::get('/{slug}-{resource}', 'show')->where([
         "resource" => $idRegex,
         "slug" => $slugRegex
     ])->name("show");
 
-    Route::prefix("admin")->name("admin.")->group(function () {
+
+
+    Route::prefix("/admin")->name("admin.")->group(function () {
         Route::get('/new', 'create')->name('create')->middleware('auth');
         Route::post('/new', 'store')->middleware('auth');
         Route::get('/{resource}/edit', 'edit')->name('edit')->middleware('auth');
