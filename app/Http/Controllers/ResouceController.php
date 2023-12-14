@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\FormPostRequest;
+use App\Http\Requests\CommentFormRequest;
+use App\Http\Requests\FormResourceRequest;
 use App\Http\Requests\SearchResourcesRequest;
 use App\Models\Category;
+use App\Models\Comment;
+use Carbon\Carbon;
 use App\Models\Resource;
 use App\Models\Tag;
 use App\Models\User;
@@ -47,7 +50,7 @@ class ResouceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(FormPostRequest $request)
+    public function store(FormResourceRequest $request)
     {
         $resource = Resource::create($this->extractData(new Resource(), $request));
         return redirect()->route('resource.show', ['slug' => $resource->slug, 'resource' => $resource->id])->with('success', 'La ressource a bien été sauvegardé');
@@ -58,13 +61,51 @@ class ResouceController extends Controller
      */
     public function show(string $slug, Resource $resource): RedirectResponse|View
     {
+        // TODO: Improve this code (duplicated with ProfileController)
+        $comments = Comment::query()->where('resource_id', '=', $resource->id)->with('user')->get();
+
+        $diffIntervals = [];
+        $now = Carbon::now();
+
+        foreach($comments as $comment){
+            $date = Carbon::parse($comment->updated_at);
+
+            if($date->diffInSeconds($now)) $diff = "Il y a ".$date->diffInSeconds($now)." seconde";
+            if($date->diffInMinutes($now)) $diff = "Il y a ".$date->diffInMinutes($now)." minute";
+            if($date->diffInHours($now)) $diff = "Il y a ".$date->diffInHours($now)." heure";
+            if($date->diffInDays($now)) $diff = "Il y a ".$date->diffInDays($now)." jour";
+            if($date->diffInMonths($now)) $diff = "Il y a ".$date->diffInMonths($now)." mois";
+            if($date->diffInYears($now)) $diff = "Il y a ".$date->diffInYears($now)." année";
+
+            if($diff > 1 && !str_contains($diff, "mois")){
+                $diff = $diff."s";
+            }
+
+            $diffIntervals[] = $diff;
+        }
+
         if ($resource->slug != $slug) {
             return to_route('resource.show', ['slug' => $resource->slug, 'resource' => $resource->id]);
         }
         return view('resource.show', [
             'resource' => $resource,
-            'users' => User::select('id')->get()
+            'users' => User::select('id')->get(),
+            'comments' => $comments,
+            'comment_elapsed_time' => $diffIntervals
         ]);
+    }
+
+    /**
+     * Store a newly created comment attached to resource.
+     */
+    public function comment(CommentFormRequest $request, string $slug, string $resourceID)
+    {
+        Comment::create(array_merge($request->validated(), [
+            'user_id' => Auth::user()->id,
+            'resource_id' => $resourceID
+        ]));
+
+        return redirect()->route('resource.show', ['slug' => $slug,  'resource' => $resourceID])->with('success', 'La ressource a bien été commentée');
     }
 
     /**
@@ -84,7 +125,7 @@ class ResouceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(FormPostRequest $request, Resource $resource)
+    public function update(FormResourceRequest $request, Resource $resource)
     {
         $resource->update($this->extractData($resource, $request));
         $resource->tags()->sync($request->validated('tags'));
@@ -99,16 +140,17 @@ class ResouceController extends Controller
         $resource = Resource::query()->with(['users'])->where('id', $resourceID)->first();
         $resource->users()->toggle(Auth::id());
         if ($resource->users->contains(Auth::user())) {
-            return to_route('resource.index')->with('success', 'La ressource a bien été ajouté à vos likes');
-        } else {
             return to_route('resource.index')->with('success', 'La ressource a bien été supprimé de vos likes');
+        } else {
+            return to_route('resource.index')->with('success', 'La ressource a bien été ajouté à vos likes');
         }
     }
 
-    private function extractData(Resource $resource, FormPostRequest $request): array
+    private function extractData(Resource $resource, FormResourceRequest $request): array
     {
         $image = $request->validated('image');
         $data = $request->validated();
+        //$data = $request->safe();
         $data['resource_author'] = Auth::user()->name;
         if ($request->method() === "PATCH" && $request->input('like') == 1) {
             $resource->users()->attach(Auth::user()->id);
@@ -142,6 +184,9 @@ class ResouceController extends Controller
     public function destroy(Resource $resource)
     {
         $resource = Resource::find($resource->id);
+        if ($resource->image) {
+            Storage::disk('public')->delete($resource->image);
+        }
         $resource->delete();
         return to_route('resource.index')->with('success', 'La ressource a bien été supprimé');
     }

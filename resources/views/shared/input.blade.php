@@ -6,6 +6,7 @@ $name ??= '';
 $placeholder ??= '';
 $oldValue ??= '';
 $area ??= false;
+$accept ??= '*';
 @endphp
 
 
@@ -15,7 +16,7 @@ $area ??= false;
     @if($area)
         <textarea class="form-control @error($name) is-invalid @enderror" name="{{$name}}" id="{{$name}}" placeholder="{{$placeholder}}">{{$oldValue}}</textarea>
     @else
-        <input class="form-control @error($name) is-invalid @enderror" type="{{$type}}" name="{{$name}}" id="{{$name}}" placeholder="{{$placeholder}}" value="{{$oldValue}}">
+        <input class="form-control @error($name) is-invalid @enderror" type="{{$type}}" accept="{{$accept}}" name="{{$name}}" id="{{$name}}" placeholder="{{$placeholder}}" value="{{$oldValue}}">
     @endif
     @error($name)
     <p class="text-danger">

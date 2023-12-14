@@ -1,7 +1,7 @@
 @php
 $multiple ??= false;
 $entities ??= [];
-$pluckedIds ??= [];
+$pluckedIds ??= null;
 $label ??= '';
 $class ??= null;
 $name ??= '';
@@ -9,14 +9,19 @@ $id ??= '';
 $oldValue ??= '';
 @endphp
 
-
 @if($multiple)
     <div @class(['form-group', $class])>
     <label for="{{$id}}">{{$label}}</label>
     <select id="{{$id}}" name="{{$name}}" class="form-control @error($name) is-invalid @enderror" multiple>
-        @foreach($entities as $entity)
-            <option @selected($pluckedIds->contains($entity->id)) value="{{$entity->id}}">{{$entity->name}}</option>
-        @endforeach
+        @if($pluckedIds)
+            @foreach($entities as $entity)
+                <option @selected($pluckedIds->contains($entity->id)) value="{{$entity->id}}">{{$entity->name}}</option>
+            @endforeach
+        @else
+            @foreach($entities as $entity)
+                <option value="{{$entity->id}}">{{$entity->name}}</option>
+            @endforeach
+        @endif
     </select>
     @error($name)
         {{ $message }}

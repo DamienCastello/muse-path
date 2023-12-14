@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class FormPostRequest extends FormRequest
+class FormResourceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -31,7 +31,8 @@ class FormPostRequest extends FormRequest
             'price' => ['numeric', 'nullable'],
             'category_id' => ['required', 'exists:categories,id'],
             'tags' => ['array', 'exists:tags,id'],
-            'user_likes' => ['nullable'],
+            'comments' => ['array', 'exists:users,id'],
+            'user_like_resource' => ['nullable'],
             'link' => ['nullable','url']
         ];
     }
