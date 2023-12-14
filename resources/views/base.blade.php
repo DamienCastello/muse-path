@@ -63,9 +63,9 @@ $routeName = request()->route()->getName();
     /////////////////////////////////////////////////-->
     <div class="container">
         @if(session('success'))
-            <div class="alert alert-success" >
+            <x-alert type="success" class="fw-bold">
                 {{ session('success') }}
-            </div>
+            </x-alert>
         @endif
         @yield('content')
     </div>
