@@ -10,6 +10,10 @@ use App\Models\Tag;
 use App\Models\Genre;
 use App\Models\Track;
 use App\Models\User;
+use App\Notifications\CommentNotification;
+use App\Notifications\FeedbackNotification;
+use App\Notifications\LikeResourceNotification;
+use App\Notifications\LikeTrackNotification;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -30,6 +34,13 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'John',
             'email' => 'john.doe@gmail.com',
+            'role' => 'user',
+            'password' => Hash::make('0000')
+        ]);
+
+        User::factory()->create([
+            'name' => 'CatFishBilly',
+            'email' => 'cat@gmail.com',
             'role' => 'user',
             'password' => Hash::make('0000')
         ]);
@@ -83,7 +94,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Tribe',
         ]);
 
-        Resource::factory()->hasAttached(Tag::all())->hasAttached(User::find(1))->create([
+        Resource::factory()->hasAttached(Tag::all())->hasAttached(User::query()->whereIn('id',[1,3])->get())->create([
             'title' => 'VST Serum',
             'image' => 'resource/1701339481.jpg',
             'slug' => 'vst-serum',
@@ -107,7 +118,7 @@ class DatabaseSeeder extends Seeder
             'user_id' => 1
         ]);
 
-        Resource::factory()->hasAttached(Tag::query()->whereIn('id',[1,3])->get())->hasAttached(User::find(2))->create([
+        Resource::factory()->hasAttached(Tag::query()->whereIn('id',[2,3])->get())->hasAttached(User::find(2))->create([
             'title' => 'Infinite kick acid sample pack',
             'image' => 'resource/1701339518.jpg',
             'slug' => 'infinite-kick-acid-sample-pack',
@@ -118,7 +129,7 @@ class DatabaseSeeder extends Seeder
             'user_id' => 1
         ]);
 
-        Resource::factory()->hasAttached(Tag::all())->hasAttached(User::query()->find(1))->create([
+        Resource::factory()->hasAttached(Tag::all())->create([
             'title' => 'VST Sylenth',
             'image' => null,
             'slug' => 'vst-sylenth',
@@ -148,6 +159,25 @@ class DatabaseSeeder extends Seeder
             'user_id' => 2,
             'track_id' => 1
         ]);
+
+        $resource1 = Resource::query()->with(['users'])->where('id', 1)->first();
+        $resource1->user->notify(new LikeResourceNotification($resource1, User::query()->find(1)->toArray(),true));
+        $resource1->user->notify(new LikeResourceNotification($resource1, User::query()->find(3)->toArray(),true));
+
+        $resource2 = Resource::query()->with(['users'])->where('id', 2)->first();
+        $resource2->user->notify(new LikeResourceNotification($resource2, User::query()->find(2)->toArray(),true));
+
+        $resource3 = Resource::query()->with(['users'])->where('id', 3)->first();
+        $resource3->user->notify(new LikeResourceNotification($resource3, User::query()->find(2)->toArray(),true));
+
+        $track1 = Track::query()->with(['users'])->where('id', 1)->first();
+        $track1->user->notify(new LikeTrackNotification($track1, User::query()->find(2)->toArray(),true));
+
+        $comment = Comment::query()->where('id', 1)->first();
+        $resource1->user->notify(new CommentNotification($comment));
+
+        $feedback = Feedback::query()->where('id', 1)->first();
+        $track1->user->notify(new FeedbackNotification($feedback));
 
         /*
         Resource::factory()

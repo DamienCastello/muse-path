@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Track;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -18,12 +19,13 @@ class LikeTrackNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(Track $track, bool $likeValue)
+    public function __construct(Track $track, array $user, bool $likeValue)
     {
         $track->loadMissing([
             "users",
         ]);
         $this->track = $track;
+        $this->source = $user;
         $this->likeValue = $likeValue;
     }
 
@@ -42,15 +44,17 @@ class LikeTrackNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $dest = $this->track->user->name;
+        $email_source = $this->source['email'];
+        $name_source = $this->source['name'];
+        $dest = $this->track->user->email;
         $verb = $this->likeValue ? "aime" : "n'aime pas" ;
         $title = $this->track->title;
         $track_id = $this->track->id;
         // Not from Mailer
         return (new MailMessage)
             ->from("soundstore@gmail.com")
-            ->replyTo($this->track->user->email)
-            ->line("L'utilisateur $dest $verb votre track $title")
+            ->replyTo($dest)
+            ->line("L'utilisateur $name_source $verb votre track $title")
             ->action('Aller à la track', url("http://local.soundstore.com/track/$track_id"));
     }
 
@@ -63,6 +67,8 @@ class LikeTrackNotification extends Notification
     {
         return [
             "track" => $this->track->toArray(),
+            "source" => $this->source,
+            "status" => $this->likeValue
         ];
     }
 
@@ -70,6 +76,9 @@ class LikeTrackNotification extends Notification
     {
         return [
             "track" => $this->track->toArray(),
+            "source" => $this->source,
+            "status" => $this->likeValue
+
         ];
     }
 

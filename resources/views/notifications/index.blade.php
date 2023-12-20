@@ -13,36 +13,44 @@
                     <div class="col-md-11 col-lg-9 col-xl-7">
 
                         @for($i = 0; $i < count($notifications); $i++)
-                            @dd($notifications[$i])
-                            <div class="d-flex flex-start my-2">
-                                <div class="card w-100">
-                                    <div class="card-body p-4">
-                                        <div class="">
-                                            <h5>{{$notifications[$i]->user->name}} vous a donné un feedback sur la track {{$notifications[$i]->track->title}}</h5>
-                                            <p style="width: 1000px;">Message : {{$notifications[$i]->message}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endfor
+                            <ul class="list-group">
 
-                        @for($i = 0; $i < count($feedbacks); $i++)
-                            <div class="d-flex flex-start my-2">
-                                <div class="card w-100">
-                                    <div class="card-body p-4">
-                                        <div class="">
-                                            <h5>{{$feedbacks[$i]->user->name}} vous a donné un feedback sur la track {{$feedbacks[$i]->track->title}}</h5>
-                                            <p style="width: 1000px;">Message : {{$feedbacks[$i]->message}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
+                                @switch($notifications[$i]->type)
+                                    @case('like_track')
+                                        @if(array_key_exists('track', $notifications[$i]->data))
+                                            @if($notifications[$i]->data['status'])
+                                                <li class="list-group-item list-group-item-success">{{$notifications[$i]->data['source']['name']}}
+                                                    aime {{$notifications[$i]->data['track']['title']}}</li>
+                                            @else
+                                                <li class="list-group-item list-group-item-danger">{{$notifications[$i]->data['source']['name']}}
+                                                    n'aime plus {{$notifications[$i]->data['track']['title']}}</li>
+                                            @endif
+                                        @endif
+                                    @case('like_resource')
+                                        @if(array_key_exists('resource', $notifications[$i]->data))
+
+                                            @if($notifications[$i]->data['status'])
+                                                <li class="list-group-item list-group-item-success">{{$notifications[$i]->data['source']['name']}}
+                                                    aime la resource {{$notifications[$i]->data['resource']['title']}}</li>
+                                            @else
+                                                <li class="list-group-item list-group-item-danger">{{$notifications[$i]->data['source']['name']}}
+                                                    n'aime pas la resource {{$notifications[$i]->data['resource']['title']}}</li>
+                                            @endif
+
+
+
+                                        @endif
+
+
+                                @endswitch
+                            </ul>
+
                         @endfor
                     </div>
                 </div>
             </div>
         </section>
     </div>
-
 
 @endsection

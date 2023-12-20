@@ -103,12 +103,12 @@ class TrackController extends Controller
         //
     }
 
-        public function like($trackID)
+    public function like($trackID)
     {
         $track = Track::query()->with(['users'])->where('id', $trackID)->first();
         $track->users()->toggle(Auth::id());
 
-        $track->user->notify(new LikeTrackNotification($track, $track->users->contains(Auth::user())));
+        $track->user->notify(new LikeTrackNotification($track, Auth::user()->toArray(), $track->users->contains(Auth::user())));
 
         if ($track->users->contains(Auth::user())) {
             return to_route('track.index')->with('success', 'La track a bien été supprimé de vos likes');

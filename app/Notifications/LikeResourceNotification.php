@@ -18,13 +18,14 @@ class LikeResourceNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(Resource $resource, bool $likeValue)
+    public function __construct(Resource $resource, array $user, bool $likeValue)
     {
         $resource->loadMissing([
             "users",
         ]);
         $this->resource = $resource;
         $this->likeValue = $likeValue;
+        $this->source = $user;
     }
 
     /**
@@ -42,7 +43,9 @@ class LikeResourceNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $dest = $this->resource->user->name;
+        $email_source = $this->source['email'];
+        $name_source = $this->source['name'];
+        $dest = $this->resource->user->email;
         $verb = $this->likeValue ? "aime" : "n'aime pas" ;
         $title = $this->resource->title;
         $slug = $this->resource->slug;
@@ -50,8 +53,8 @@ class LikeResourceNotification extends Notification
         // Not from Mailer
         return (new MailMessage)
             ->from("soundstore@gmail.com")
-            ->replyTo($this->resource->user->email)
-            ->line("L'utilisateur $dest $verb votre resource $title")
+            ->replyTo($dest)
+            ->line("L'utilisateur $name_source $verb votre resource $title")
             ->action('Aller au resource', url("http://local.soundstore.com/resource/$slug"."-$resource_id"));
     }
 
@@ -64,6 +67,8 @@ class LikeResourceNotification extends Notification
     {
         return [
             "resource" => $this->resource->toArray(),
+            "source" => $this->source,
+            "status" => $this->likeValue
         ];
     }
 
@@ -71,6 +76,8 @@ class LikeResourceNotification extends Notification
     {
         return [
             "resource" => $this->resource->toArray(),
+            "source" => $this->source,
+            "status" => $this->likeValue
         ];
     }
 

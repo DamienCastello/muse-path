@@ -41,15 +41,16 @@ class CommentNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $dest = $this->comment->resource->user->name;
+        $source = $this->comment->user->name;
+        $dest = $this->comment->resource->user->email;
         $content = $this->comment->content;
         $track_id = $this->comment->resource->id;
         $slug = $this->comment->resource->slug;
         // Not from Mailer
         return (new MailMessage)
             ->from("soundstore@gmail.com")
-            ->replyTo($this->comment->resource->user->email)
-            ->line("Un nouveau commentaire a été envoyé par $dest")
+            ->replyTo($dest)
+            ->line("Un nouveau commentaire a été envoyé par $source")
             ->line("Message: $content")
             ->action('Aller à la ressource', url("http://local.soundstore.com/resource/$slug"."-$track_id"));
     }

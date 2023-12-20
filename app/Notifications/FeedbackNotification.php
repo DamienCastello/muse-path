@@ -42,14 +42,15 @@ class FeedbackNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $dest = $this->feedback->track->user->name;
+        $source = $this->feedback->user->name;
+        $dest = $this->feedback->track->user->email;
         $message = $this->feedback->message;
         $track_id = $this->feedback->track->id;
         // Not from Mailer
         return (new MailMessage)
             ->from("soundstore@gmail.com")
-            ->replyTo($this->feedback->user->email)
-            ->line("Un nouveau feedback a été envoyé par $dest")
+            ->replyTo($dest)
+            ->line("Un nouveau feedback a été envoyé par $source")
             ->line("Message: $message")
             ->action('Aller au feedback', url("http://local.soundstore.com/track/$track_id"));
     }
