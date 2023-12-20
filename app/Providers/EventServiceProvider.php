@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
-use App\Events\ContactRequestEvent;
-use App\Listeners\ContactEventSuscriber;
-use App\Listeners\ContactListener;
+use App\Events\CommentEvent;
+use App\Listeners\CommentEventSubscriber;
+use App\Listeners\CommentListener;
+use App\Listeners\ContactRequestEventSubscriber;
+use App\Listeners\FeedbackEventSubscriber;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -24,7 +26,9 @@ class EventServiceProvider extends ServiceProvider
     ];
 
     protected $subscribe = [
-      ContactEventSuscriber::class
+        ContactRequestEventSubscriber::class,
+        CommentEventSubscriber::class,
+        FeedbackEventSubscriber::class
     ];
 
     /**

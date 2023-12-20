@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\Resource;
+use App\Models\Track;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -10,14 +10,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class UserContactMail extends Mailable
+class UserFeedbackMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public Resource $resource, public array $data)
+    public function __construct(public Track $track, public array $data)
     {
         //
     }
@@ -28,9 +28,9 @@ class UserContactMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            to: $this->resource->user->email,
+            to: $this->track->user->email,
             replyTo: $this->data['sender']->email,
-            subject: 'User Contact Mail',
+            subject: 'User Feedback Mail',
         );
     }
 
@@ -40,7 +40,7 @@ class UserContactMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.user.comment',
+            markdown: 'emails.user.feedback',
         );
     }
 

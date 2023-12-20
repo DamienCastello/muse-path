@@ -15,7 +15,7 @@
 
     <style>
         .container{
-            margin-top: 7rem;
+            margin-top: 10rem;
         }
     </style>
 </head>
@@ -45,10 +45,11 @@ $routeName = request()->route()->getName();
         </li>
           <li class="nav-item mr-3">
             @auth
-            <a @class(["nav-link", "active" => str_starts_with($routeName, 'feedback.')]) href="{{ route('feedback.index') }}">Feedbacks<span class="sr-only"></span></a>
+            <a @class(["nav-link", "active" => str_starts_with($routeName, 'notification.')]) href="{{ route('notification.index') }}">Notifications<span class="sr-only"></span></a>
             @endauth
         </li>
       </ul>
+
         <div class="navbar-nav mb-lg-0">
             <div class="flex-column">
                 @auth

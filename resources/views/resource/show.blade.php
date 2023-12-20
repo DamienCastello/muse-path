@@ -17,19 +17,14 @@
         </div>
         <p class="mt-3">{{$resource->description}}</p>
     </article>
-
-    @php
-        $user_resource_author = \App\Models\User::query()->where('name', '=', $resource->resource_author)->first();
-    @endphp
-
     <div class="d-flex justify-content-start align-items-center mb-5">
         <p class="font-italic mr-3">Ressource créée par : </p>
-        <a href="{{ route('user.contact', ['user' => $user_resource_author, 'resource' => $resource]) }}">
+        <a href="{{ route('user.contact', ['user' => $resource->user, 'resource' => $resource]) }}">
             <img class="rounded-circle shadow-1-strong me-3 mr-3"
                  src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(21).webp" alt="avatar" width="65"
                  height="65"/>
         </a>
-        <p class="font-weight-bold">{{$resource->resource_author}}</p>
+        <p class="font-weight-bold">{{$resource->user->name}}</p>
     </div>
 
     <div class="d-flex justify-content-between">

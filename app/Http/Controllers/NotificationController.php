@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Feedback;
+use Auth;
 use Illuminate\Http\Request;
 
-class FeedbackController extends Controller
+class NotificationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $feedbacks = Feedback::query()->with('track')->get()->all();
-
-        return view('feedback.index', ['feedbacks' => $feedbacks]);
+        dd(Auth::user()->notifications->toArray());
+        return view('notifications.index', ['notifications' => Auth::user()->notifications, 'feedbacks' => []]);
     }
 
     /**

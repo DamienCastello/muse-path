@@ -2,18 +2,18 @@
 
 namespace App\Events;
 
-use App\Models\Resource;
+use App\Models\Track;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ContactRequestEvent
+class FeedbackEvent
 {
     use Dispatchable, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public Resource $resource, public array $data)
+    public function __construct(public Track $track, public array $data)
     {
 
     }

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -48,10 +47,16 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function resources(): BelongsToMany {
+
+    public function track_likes(): BelongsToMany {
+        return $this->belongsToMany(Track::class);
+    }
+
+    public function resource_likes(): BelongsToMany {
         return $this->belongsToMany(Resource::class);
     }
 
+    //Owner
     public function tracks(): HasMany {
         return $this->hasMany(Track::class);
     }

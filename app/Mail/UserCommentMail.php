@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class UserContactMail extends Mailable
+class UserCommentMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -28,9 +28,10 @@ class UserContactMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
+            from: "soundstore@gmail.com",
             to: $this->resource->user->email,
             replyTo: $this->data['sender']->email,
-            subject: 'User Contact Mail',
+            subject: 'User Comment Mail',
         );
     }
 

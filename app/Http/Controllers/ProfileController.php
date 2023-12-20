@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CommentEvent;
 use App\Events\ContactRequestEvent;
 use App\Http\Requests\ContactRequest;
 use App\Http\Requests\ProfileUpdateRequest;
-use App\Mail\UserContactMail;
+use App\Mail\UserCommentMail;
 use App\Models\Comment;
 use App\Models\Resource;
 use App\Models\User;
@@ -34,9 +35,8 @@ class ProfileController extends Controller
     public function mail(ContactRequest $request, User $user): RedirectResponse|View
     {
         $resource = Resource::find(request()->resource);
-        $dest = User::query()->where('name', "=", $resource->resource_author)->first();
         //ContactRequestEvent::dispatch($resource, ['message' => $request->validated('message'), 'dest' => $dest->email, 'sender' => Auth::user()]);
-        event(new ContactRequestEvent($resource, ['message' => $request->validated('message'), 'dest' => $dest->email, 'sender' => Auth::user()]));
+        event(new ContactRequestEvent($resource, ['message' => $request->validated('message'), 'dest' => $resource->user->email, 'sender' => Auth::user()]));
         //Mail::send(new UserContactMail($resource, ['message' => $request->validated('message'), 'dest' => $dest->email, 'sender' => Auth::user()]));
 
         // TODO: Improve this code (duplicated with ResourceController)
@@ -47,7 +47,7 @@ class ProfileController extends Controller
 
         foreach($comments as $comment){
             $date = Carbon::parse($comment->updated_at);
-
+            //diffForHuman Bordel !
             if($date->diffInSeconds($now)) $diff = "Il y a ".$date->diffInSeconds($now)." seconde";
             if($date->diffInMinutes($now)) $diff = "Il y a ".$date->diffInMinutes($now)." minute";
             if($date->diffInHours($now)) $diff = "Il y a ".$date->diffInHours($now)." heure";
