@@ -44,7 +44,7 @@ class ResouceController extends Controller
         $resource = new Resource();
         return view('resource.create', [
             'resource' => $resource,
-            'categories' => Category::select('id', 'name')->get(),
+            'categories' => Category::query()->select('id', 'name')->get(),
             'tags' => Tag::select('id', 'name')->get(),
             'post' => true,
         ]);
@@ -151,9 +151,9 @@ class ResouceController extends Controller
         $resource->user->notify(new LikeResourceNotification($resource, Auth::user()->toArray(), $resource->users->contains(Auth::user())));
 
         if ($resource->users->contains(Auth::user())) {
-            return to_route('resource.index')->with('success', 'La ressource a bien été supprimé de vos likes');
+            return to_route('resource.index')->with('success', 'La ressource a bien été supprimée de vos likes');
         } else {
-            return to_route('resource.index')->with('success', 'La ressource a bien été ajouté à vos likes');
+            return to_route('resource.index')->with('success', 'La ressource a bien été ajoutée à vos likes');
         }
     }
 
