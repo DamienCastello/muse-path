@@ -20,22 +20,30 @@
                                     @case('like_track')
                                         @if(array_key_exists('track', $notifications[$i]->data))
                                             @if($notifications[$i]->data['status'])
-                                                <li class="list-group-item list-group-item-success">{{$notifications[$i]->data['source']['name']}}
-                                                    aime {{$notifications[$i]->data['track']['title']}}</li>
+                                                <li class="list-group-item list-group-item-success">
+                                                    <i class="btn fa-solid fa-heart" style="color: lightgreen"></i>
+                                                    {{$notifications[$i]->data['source']['name']}} aime {{$notifications[$i]->data['track']['title']}}
+                                                </li>
                                             @else
-                                                <li class="list-group-item list-group-item-danger">{{$notifications[$i]->data['source']['name']}}
-                                                    n'aime plus {{$notifications[$i]->data['track']['title']}}</li>
+                                                <li class="list-group-item list-group-item-danger">
+                                                    <i class="btn fa-regular fa-heart" style="color: lightcoral"></i>
+                                                    {{$notifications[$i]->data['source']['name']}} n'aime plus {{$notifications[$i]->data['track']['title']}}
+                                                </li>
                                             @endif
                                         @endif
                                     @case('like_resource')
                                         @if(array_key_exists('resource', $notifications[$i]->data))
 
                                             @if($notifications[$i]->data['status'])
-                                                <li class="list-group-item list-group-item-success">{{$notifications[$i]->data['source']['name']}}
-                                                    aime la resource {{$notifications[$i]->data['resource']['title']}}</li>
+                                                <li class="list-group-item list-group-item-success">
+                                                    <i class="btn fa-solid fa-heart" style="color: lightgreen"></i>
+                                                    {{$notifications[$i]->data['source']['name']}} aime la resource {{$notifications[$i]->data['resource']['title']}}
+                                                </li>
                                             @else
-                                                <li class="list-group-item list-group-item-danger">{{$notifications[$i]->data['source']['name']}}
-                                                    n'aime pas la resource {{$notifications[$i]->data['resource']['title']}}</li>
+                                                <li class="list-group-item list-group-item-danger">
+                                                    <i class="btn fa-regular fa-heart" style="color: lightcoral"></i>
+                                                    {{$notifications[$i]->data['source']['name']}} n'aime pas la resource {{$notifications[$i]->data['resource']['title']}}
+                                                </li>
                                             @endif
 
 

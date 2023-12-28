@@ -7,6 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{asset('fontawesome-free-6.5.1-web/css/all.min.css')}}">
+    <link href="{{ asset('/css/style.css') }}" rel="stylesheet">
+
     <title>Sandbox  S T 0 R E - @yield('title')</title>
     <!--//////////// Test display react view ///////////
         @//viteReactRefresh
@@ -24,7 +27,6 @@
 @php
 $routeName = request()->route()->getName();
 @endphp
-
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand link-light" href="{{ route('resource.index') }}">SOUNDSTORE</a>

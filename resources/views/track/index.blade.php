@@ -56,10 +56,7 @@
                                         <input class="invisible" type="hidden" value="{{$liked}}" name="like"
                                                role="switch" id="like">
                                     </div>
-                                    <button type="submit"
-                                            @class(["btn btn-sm", $liked ? 'btn-success' : 'btn-secondary']) @error('like') is-invalid @enderror>
-                                        {{$liked ? '<3' : '</3' }}
-                                    </button>
+                                    <button type="submit" @class(["btn", $liked ? 'fa-solid fa-heart btn-like' : 'fa-regular fa-heart btn-unlike']) @error('like') is-invalid @enderror></button>
                                 </form>
                             @endif
                         </div>
