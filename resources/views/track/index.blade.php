@@ -32,7 +32,6 @@
                 <a style="color:#e7effd;text-decoration:none;font-weight: bold;font-size: 1.2rem;"
                    href="{{ route("track.show", ['track' => $track->id]) }}">
                     <div class="card-body">
-
                         @if($track->image)
                             <img style="border: 2px ridge black;border-radius:30px;" class="card-img-top"
                                  src="{{asset("storage/user-asset/$track->image")}}" alt="Card track preview">
@@ -42,18 +41,34 @@
                                  src="{{asset("storage/soundstore_default_preview_track.jpg")}}"
                                  alt="resource_illustration">
                         @endif
-
-                        {{$track->title}}
-
-                        <div>
-                      <span class="mr-3">
-                            @if(!$track->genres->isEmpty())
-                              @foreach($track->genres as $genre)
-                                  <span class="badge badge-secondary">{{$genre->name}}</span>
-                              @endforeach
-                          @endif
-                      </span>
+                        @php
+                            $liked = $track->users()->pluck('id')->contains(function (int $value) {
+                                return $value == Auth::user()->id;
+                            })
+                        @endphp
+                        <div class="d-flex justify-content-between mt-2">
+                            {{$track->title}}
+                            @if(Auth::user()->id !== $track->user->id)
+                                <form action="{{ route('track.admin.like', ['track' => $track]) }}" method="post">
+                                    @csrf
+                                    @method('POST')
+                                    <div class="form-check form-switch">
+                                        <input class="invisible" type="hidden" value="{{$liked}}" name="like"
+                                               role="switch" id="like">
+                                    </div>
+                                    <button type="submit" @class(["btn", $liked ? 'fa-solid fa-heart btn-like' : 'fa-regular fa-heart btn-unlike']) @error('like') is-invalid @enderror></button>
+                                </form>
+                            @endif
                         </div>
+
+
+                        <span class="mr-3">
+                                @if(!$track->genres->isEmpty())
+                                @foreach($track->genres as $genre)
+                                    <span class="badge badge-secondary">{{$genre->name}}</span>
+                                @endforeach
+                            @endif
+                            </span>
                     </div>
                 </a>
             </div>

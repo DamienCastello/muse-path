@@ -7,6 +7,9 @@ use App\Http\Requests\FormResourceRequest;
 use App\Http\Requests\SearchResourcesRequest;
 use App\Models\Category;
 use App\Models\Comment;
+use App\Notifications\CommentNotification;
+use App\Notifications\LikeResourceNotification;
+use App\Notifications\LikeTrackNotification;
 use Carbon\Carbon;
 use App\Models\Resource;
 use App\Models\Tag;
@@ -29,7 +32,7 @@ class ResouceController extends Controller
             $query = $query->where('title', 'like', "%{$request->validated('title')}%");
         }
         return view('resource.index', [
-            'resources' => $query->with(['users', 'tags', 'category'])->recent()->paginate(3)
+            'resources' => $query->with(['user', 'tags', 'category'])->recent()->paginate(3)
         ]);
     }
 
@@ -41,7 +44,7 @@ class ResouceController extends Controller
         $resource = new Resource();
         return view('resource.create', [
             'resource' => $resource,
-            'categories' => Category::select('id', 'name')->get(),
+            'categories' => Category::query()->select('id', 'name')->get(),
             'tags' => Tag::select('id', 'name')->get(),
             'post' => true,
         ]);
@@ -100,11 +103,16 @@ class ResouceController extends Controller
      */
     public function comment(CommentFormRequest $request, string $slug, string $resourceID)
     {
-        Comment::create(array_merge($request->validated(), [
+        $comment = Comment::create(array_merge($request->validated(), [
             'user_id' => Auth::user()->id,
             'resource_id' => $resourceID
         ]));
-
+        $comment->loadMissing([
+            "user",
+            "resource.user",
+        ]);
+        $commentNotification = new CommentNotification($comment);
+        $comment->resource->user->notify($commentNotification);
         return redirect()->route('resource.show', ['slug' => $slug,  'resource' => $resourceID])->with('success', 'La ressource a bien été commentée');
     }
 
@@ -139,10 +147,13 @@ class ResouceController extends Controller
     {
         $resource = Resource::query()->with(['users'])->where('id', $resourceID)->first();
         $resource->users()->toggle(Auth::id());
+
+        $resource->user->notify(new LikeResourceNotification($resource, Auth::user()->toArray(), $resource->users->contains(Auth::user())));
+
         if ($resource->users->contains(Auth::user())) {
-            return to_route('resource.index')->with('success', 'La ressource a bien été supprimé de vos likes');
+            return to_route('resource.index')->with('success', 'La ressource a bien été supprimée de vos likes');
         } else {
-            return to_route('resource.index')->with('success', 'La ressource a bien été ajouté à vos likes');
+            return to_route('resource.index')->with('success', 'La ressource a bien été ajoutée à vos likes');
         }
     }
 
@@ -151,7 +162,7 @@ class ResouceController extends Controller
         $image = $request->validated('image');
         $data = $request->validated();
         //$data = $request->safe();
-        $data['resource_author'] = Auth::user()->name;
+        $data['user_id'] = Auth::user()->id;
         if ($request->method() === "PATCH" && $request->input('like') == 1) {
             $resource->users()->attach(Auth::user()->id);
             unset($data['like']);

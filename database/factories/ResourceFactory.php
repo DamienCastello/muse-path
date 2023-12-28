@@ -25,13 +25,13 @@ class ResourceFactory extends Factory
 
         return [
             'title' => $this->faker->words(3,true),
-            'resource_author' => $this->faker->lastName(),
             'image' => $this->faker->image($filepath,300,200),
             'slug' => $this->faker->slug(3),
             'description' => $this->faker->sentence(100),
             'price' => $this->faker->randomElement([0, 300]),
             'link' => $this->faker->url(),
-            'category_id' => $this->faker->randomElement([1, 4])
+            'category_id' => $this->faker->randomElement([1, 4]),
+            'user_id' => $this->faker->randomElement([1, 4])
         ];
     }
 }

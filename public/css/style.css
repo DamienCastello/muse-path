@@ -1,0 +1,13 @@
+.btn-like {
+    &:hover {
+        color: lightgreen;
+    }
+    color: #00B536;
+}
+
+.btn-unlike {
+    &:hover {
+        color: rgb(128, 128, 128);
+    }
+    color: darkgray;
+}

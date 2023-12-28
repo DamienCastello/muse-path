@@ -28,7 +28,7 @@ class UserContactMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            to: $this->data['dest'],
+            to: $this->resource->user->email,
             replyTo: $this->data['sender']->email,
             subject: 'User Contact Mail',
         );
@@ -40,7 +40,7 @@ class UserContactMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.user.contact',
+            markdown: 'emails.user.comment',
         );
     }
 

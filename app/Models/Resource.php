@@ -21,17 +21,26 @@ class Resource extends Model
 
     protected $fillable = [
         'title',
-        'resource_author',
         'image',
         'slug',
         'description',
         'price',
         'link',
-        'category_id'
+        'category_id',
+        'user_id'
     ];
 
     public function category(): BelongsTo {
         return $this->belongsTo(Category::class);
+    }
+
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class);
+    }
+
+    // USERS_LIKES_RESOURCES
+    public function users(): BelongsToMany {
+        return $this->belongsToMany(User::class);
     }
 
     public function tags(): BelongsToMany {
@@ -40,10 +49,6 @@ class Resource extends Model
 
     public function comments(): HasMany {
         return $this->hasMany(Comment::class);
-    }
-
-    public function users(): BelongsToMany {
-        return $this->belongsToMany(User::class);
     }
 
     public function imageUrl(): string {

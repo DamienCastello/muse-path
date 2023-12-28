@@ -17,6 +17,10 @@ class Comment extends Model
         'resource_id'
     ];
 
+    protected $casts = [
+        'updated_at' => 'datetime:Y-m-d',
+    ];
+
     public function user(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
@@ -25,7 +29,4 @@ class Comment extends Model
         return $this->belongsTo(Resource::class);
     }
 
-    protected $casts = [
-        'updated_at' => 'datetime:Y-m-d',
-    ];
 }

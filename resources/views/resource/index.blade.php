@@ -22,7 +22,7 @@
     @forelse($resources as $resource)
 
         @php
-            $value = $resource->users()->pluck('id')->contains(function (int $value) {
+            $liked = $resource->users()->pluck('id')->contains(function (int $value) {
                 return $value === Auth::user()->id ? true : false;
             })
         @endphp
@@ -40,7 +40,7 @@
                     @endif
                 </span>
                 <span class="ml-3">
-                    {{$value ? 'Liké <3' : ''}}
+                    {{$liked ? 'Liké <3' : ''}}
                 </span>
             </p>
 
@@ -62,11 +62,9 @@
                     @csrf
                     @method('POST')
                     <div class="form-check form-switch">
-                        <input class="invisible" type="hidden" value="{{$value}}" name="like" role="switch" id="like">
+                        <input class="invisible" type="hidden" value="{{$liked}}" name="like" role="switch" id="like">
                     </div>
-                    <button type="submit" @class(["btn", $value ? 'btn-danger' : 'btn-success']) @error('like') is-invalid @enderror>
-                        {{$value ? 'Unlike </3' : 'Like <3' }}
-                    </button>
+                    <button type="submit" @class(["btn", $liked ? 'fa-solid fa-heart btn-like' : 'fa-regular fa-heart btn-unlike']) @error('like') is-invalid @enderror></button>
                 </form>
                 @endauth
             </div>

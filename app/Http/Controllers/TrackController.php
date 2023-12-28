@@ -7,6 +7,8 @@ use App\Http\Requests\FormTrackRequest;
 use App\Http\Requests\SearchTracksRequest;
 use App\Models\Feedback;
 use App\Models\Genre;
+use App\Notifications\FeedbackNotification;
+use App\Notifications\LikeTrackNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -31,7 +33,7 @@ class TrackController extends Controller
             $query = $query->where('title', 'like', "%{$request->validated('title')}%");
         }
         return view('track.index', [
-            'tracks' => $query->with(['genres'])->get()
+            'tracks' => $query->with(['genres', 'users'])->get()
             //'tracks' => $query
         ]);
     }
@@ -101,15 +103,36 @@ class TrackController extends Controller
         //
     }
 
+    public function like($trackID)
+    {
+        $track = Track::query()->with(['users'])->where('id', $trackID)->first();
+        $track->users()->toggle(Auth::id());
+
+        $track->user->notify(new LikeTrackNotification($track, Auth::user()->toArray(), $track->users->contains(Auth::user())));
+
+        if ($track->users->contains(Auth::user())) {
+            return to_route('track.index')->with('success', 'La track a bien été supprimé de vos likes');
+        } else {
+            return to_route('track.index')->with('success', 'La track a bien été ajouté à vos likes');
+        }
+    }
+
     /**
      * Store a newly created feedback attached to track.
      */
     public function feedback(FeedbackFormRequest $request, string $trackID)
     {
-        Feedback::create(array_merge($request->validated(), [
+        $feedback = Feedback::create(array_merge($request->validated(), [
             'user_id' => Auth::user()->id,
             'track_id' => $trackID
         ]));
+        $feedback->loadMissing([
+            "user",
+            "track.user",
+        ]);
+        $feedbackNotification = new FeedbackNotification($feedback);
+        $feedback->track->user->notify($feedbackNotification);
+
 
         return redirect()->route('track.show', ['track' => $trackID])->with('success', 'Feedback envoyé à l\'artiste');
     }
