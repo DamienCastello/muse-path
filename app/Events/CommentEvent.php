@@ -6,7 +6,7 @@ use App\Models\Resource;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ContactRequestEvent
+class CommentEvent
 {
     use Dispatchable, SerializesModels;
 

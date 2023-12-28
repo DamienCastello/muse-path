@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResouceController;
 use App\Models\Track;
@@ -86,14 +87,11 @@ Route::prefix("/track")->name('track.')->controller(\App\Http\Controllers\TrackC
 
 });
 
-Route::prefix("/feedback")->name('feedback.')->controller(FeedbackController::class)->group(function () {
+Route::prefix("/notification")->name('notification.')->controller(NotificationController::class)->group(function () {
     $idRegex = "[0-9]+";
 
     Route::get("/", 'index')->name('index');
 
-    Route::post('/{feedback}','show')->where([
-        "feedback" => $idRegex,
-    ])->name("show");
 
 
     /*

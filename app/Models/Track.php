@@ -26,6 +26,11 @@ class Track extends Model
         return $this->belongsTo(User::class);
     }
 
+    // USERS_LIKES_TRACK
+    public function users(): BelongsToMany {
+        return $this->belongsToMany(User::class);
+    }
+
     public function feedbacks(): HasMany {
         return $this->hasMany(Feedback::class);
     }

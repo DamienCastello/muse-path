@@ -21,6 +21,14 @@ return new class extends Migration
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
+
+
+        Schema::create('track_user', function (Blueprint $table) {
+            $table->foreignIdFor(\App\Models\User::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\Track::class)->constrained()->cascadeOnDelete();
+            $table->primary(['user_id', 'track_id']);
+        });
+
     }
 
     /**
@@ -29,6 +37,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('tracks');
+        Schema::dropIfExists('track_user');
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeignIdFor(\App\Models\User::class);
         });
