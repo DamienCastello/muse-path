@@ -12,7 +12,6 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        dd(Auth::user()->notifications->toArray());
         return view('notifications.index', ['notifications' => Auth::user()->notifications, 'feedbacks' => []]);
     }
 

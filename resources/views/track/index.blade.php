@@ -42,23 +42,23 @@
                                  alt="resource_illustration">
                         @endif
                         @php
-                            $value = $track->users()->pluck('id')->contains(function (int $value) {
-                                return $value === Auth::user()->id ? true : false;
+                            $liked = $track->users()->pluck('id')->contains(function (int $value) {
+                                return $value == Auth::user()->id;
                             })
                         @endphp
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between mt-2">
                             {{$track->title}}
                             @if(Auth::user()->id !== $track->user->id)
                                 <form action="{{ route('track.admin.like', ['track' => $track]) }}" method="post">
                                     @csrf
                                     @method('POST')
                                     <div class="form-check form-switch">
-                                        <input class="invisible" type="hidden" value="{{$value}}" name="like"
+                                        <input class="invisible" type="hidden" value="{{$liked}}" name="like"
                                                role="switch" id="like">
                                     </div>
                                     <button type="submit"
-                                            @class(["btn btn-sm", $value ? 'btn-danger' : 'btn-success']) @error('like') is-invalid @enderror>
-                                        {{$value ? 'Unlike </3' : 'Like <3' }}
+                                            @class(["btn btn-sm", $liked ? 'btn-success' : 'btn-secondary']) @error('like') is-invalid @enderror>
+                                        {{$liked ? '<3' : '</3' }}
                                     </button>
                                 </form>
                             @endif

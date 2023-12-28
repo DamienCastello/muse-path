@@ -148,7 +148,7 @@ class ResouceController extends Controller
         $resource = Resource::query()->with(['users'])->where('id', $resourceID)->first();
         $resource->users()->toggle(Auth::id());
 
-        $resource->user->notify(new LikeResourceNotification($resource, $resource->users->contains(Auth::user())));
+        $resource->user->notify(new LikeResourceNotification($resource, Auth::user()->toArray(), $resource->users->contains(Auth::user())));
 
         if ($resource->users->contains(Auth::user())) {
             return to_route('resource.index')->with('success', 'La ressource a bien été supprimé de vos likes');
