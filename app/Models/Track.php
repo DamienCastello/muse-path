@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Storage;
 
 class Track extends Model
@@ -26,10 +27,17 @@ class Track extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function users(): MorphToMany
+    {
+        return $this->morphToMany(User::class, 'likable');
+    }
+
+    /*
     // USERS_LIKES_TRACK
     public function users(): BelongsToMany {
         return $this->belongsToMany(User::class);
     }
+    */
 
     public function feedbacks(): HasMany {
         return $this->hasMany(Feedback::class);

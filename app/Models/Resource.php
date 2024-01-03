@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
@@ -38,10 +39,17 @@ class Resource extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function users(): MorphToMany
+    {
+        return $this->morphToMany(User::class, 'likable');
+    }
+
+    /*
     // USERS_LIKES_RESOURCES
     public function users(): BelongsToMany {
         return $this->belongsToMany(User::class);
     }
+    */
 
     public function tags(): BelongsToMany {
         return $this->belongsToMany(Tag::class);

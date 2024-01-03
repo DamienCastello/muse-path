@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -48,6 +49,23 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
 
+    /**
+     * Get all tracks that are assigned to this user.
+     */
+    public function track_likes(): MorphToMany
+    {
+        return $this->morphedByMany(Track::class, 'likable');
+    }
+
+    /**
+     * Get all resources that are assigned to this user.
+     */
+    public function resource_likes(): MorphToMany
+    {
+        return $this->morphedByMany(Resource::class, 'likable');
+    }
+
+    /*
     public function track_likes(): BelongsToMany {
         return $this->belongsToMany(Track::class);
     }
@@ -55,6 +73,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function resource_likes(): BelongsToMany {
         return $this->belongsToMany(Resource::class);
     }
+    */
 
     //Owner
     public function tracks(): HasMany {
