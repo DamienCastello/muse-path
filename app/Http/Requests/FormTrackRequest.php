@@ -31,11 +31,4 @@ class FormTrackRequest extends FormRequest
             'genres' => ['array', 'exists:genres,id'],
         ];
     }
-
-    public function messages()
-    {
-        return [
-            "title.required" => "Fou moi un putain de titre putain !!"
-        ];
-    }
 }

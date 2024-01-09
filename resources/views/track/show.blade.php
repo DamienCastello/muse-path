@@ -67,7 +67,7 @@
                         @for($i = 0; $i < count($feedbacks); $i++)
                             <div class="d-flex flex-start my-2">
                                 <img class="rounded-circle shadow-1-strong me-3"
-                                     src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(27).webp" alt="avatar"
+                                     src="{{asset(str_contains("soundstore_default_preview_track.jpg", $feedbacks[$i]->user->avatar) ? 'storage/'.$feedbacks[$i]->user->avatar : 'storage/user-asset/'.$feedbacks[$i]->user->avatar)}}" alt="avatar"
                                      width="65"
                                      height="65"/>
                                 <div class="card w-100">

@@ -64,6 +64,14 @@ class ResouceController extends Controller
      */
     public function show(string $slug, Resource $resource): RedirectResponse|View
     {
+        //AVATAR
+        $user = \App\Models\User::query()->find($resource->user->id);
+        $avatar = asset("/storage/".$user->avatar);
+        if($user->avatar !== "soundstore_default_preview_track.jpg"){
+            $avatar = asset("storage/user-asset/$user->avatar");
+        }
+
+
         // TODO: Improve this code (duplicated with ProfileController)
         $comments = Comment::query()->where('resource_id', '=', $resource->id)->with('user')->get();
 
@@ -90,8 +98,10 @@ class ResouceController extends Controller
         if ($resource->slug != $slug) {
             return to_route('resource.show', ['slug' => $resource->slug, 'resource' => $resource->id]);
         }
+
         return view('resource.show', [
             'resource' => $resource,
+            'avatar' => $avatar,
             'users' => User::select('id')->get(),
             'comments' => $comments,
             'comment_elapsed_time' => $diffIntervals
