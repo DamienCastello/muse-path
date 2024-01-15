@@ -23,13 +23,13 @@ use Intervention\Image\Facades\Image as ResizeImage;
 
 class ProfileController extends Controller
 {
-        /**
+    /**
      * Display the specified user.
      */
     public function contact(User $user): RedirectResponse|View
     {
-        $avatar = asset("/storage/".$user->avatar);
-        if($user->avatar !== "soundstore_default_preview_track.jpg"){
+        $avatar = asset("/storage/" . $user->avatar);
+        if ($user->avatar !== "soundstore_default_preview_track.jpg") {
             $avatar = asset("storage/user-asset/$user->avatar");
         }
 
@@ -53,18 +53,18 @@ class ProfileController extends Controller
         $diffIntervals = [];
         $now = Carbon::now();
 
-        foreach($comments as $comment){
+        foreach ($comments as $comment) {
             $date = Carbon::parse($comment->updated_at);
             //diffForHuman Bordel !
-            if($date->diffInSeconds($now)) $diff = "Il y a ".$date->diffInSeconds($now)." seconde";
-            if($date->diffInMinutes($now)) $diff = "Il y a ".$date->diffInMinutes($now)." minute";
-            if($date->diffInHours($now)) $diff = "Il y a ".$date->diffInHours($now)." heure";
-            if($date->diffInDays($now)) $diff = "Il y a ".$date->diffInDays($now)." jour";
-            if($date->diffInMonths($now)) $diff = "Il y a ".$date->diffInMonths($now)." mois";
-            if($date->diffInYears($now)) $diff = "Il y a ".$date->diffInYears($now)." année";
+            if ($date->diffInSeconds($now)) $diff = "Il y a " . $date->diffInSeconds($now) . " seconde";
+            if ($date->diffInMinutes($now)) $diff = "Il y a " . $date->diffInMinutes($now) . " minute";
+            if ($date->diffInHours($now)) $diff = "Il y a " . $date->diffInHours($now) . " heure";
+            if ($date->diffInDays($now)) $diff = "Il y a " . $date->diffInDays($now) . " jour";
+            if ($date->diffInMonths($now)) $diff = "Il y a " . $date->diffInMonths($now) . " mois";
+            if ($date->diffInYears($now)) $diff = "Il y a " . $date->diffInYears($now) . " année";
 
-            if($diff > 1 && !str_contains($diff, "mois")){
-                $diff = $diff."s";
+            if ($diff > 1 && !str_contains($diff, "mois")) {
+                $diff = $diff . "s";
             }
 
             $diffIntervals[] = $diff;
@@ -86,14 +86,8 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        $avatar = asset("/storage/".$user->avatar);
-        if($user->avatar !== "soundstore_default_preview_track.jpg"){
-            $avatar = asset("storage/user-asset/$user->avatar");
-        }
-
         return view('profile.edit', [
-            'user' => $user,
-            'avatar' => $avatar
+            'user' => $user
         ]);
     }
 
@@ -102,33 +96,6 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $data = $request->validated();
-
-        $avatar = $request->validated('avatar');
-        if(Auth::user()->avatar !== "soundstore_default_preview_track.jpg"){
-            if(Storage::disk('users-data')->exists(Auth::user()->avatar)){
-                Storage::disk('users-data')->delete(Auth::user()->avatar);
-            }
-        }
-
-        if ($avatar !== null) {
-            $resizedAvatar = ResizeImage::make($request->file('avatar'))->resize(300, 200);
-            $avatarName = time() . '.' . $request->avatar->extension();
-            $data['avatar'] = Auth::user()->id . '/avatar/' . $avatarName;
-            $resizedAvatar->save($avatarName);
-            Storage::disk('users-data')->putFileAs(Auth::user()->id . "/avatar", $resizedAvatar->basePath(), $avatarName);
-            
-            $request->user()->fill($data);
-
-            if ($request->user()->isDirty('email')) {
-                $request->user()->email_verified_at = null;
-            }
-
-            $request->user()->save();
-
-            return Redirect::route('profile.edit')->with('status', 'profile-updated');
-        }
-
         $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {

@@ -37,7 +37,7 @@
     @if(!$post)
         <div class="d-flex justify-content-start mb-5">
             @php
-                $usersIds = $resource->likes()->pluck('id');
+                $usersIds = $resource->users()->pluck('id');
                 $value = $usersIds->contains(function (int $value) {
                     return $value === Auth::user()->id ? true : false;
                 });
