@@ -55,8 +55,29 @@ class ResouceController extends Controller
      */
     public function store(FormResourceRequest $request)
     {
-        $resource = Resource::create($this->extractData(new Resource(), $request));
-        return redirect()->route('resource.show', ['slug' => $resource->slug, 'resource' => $resource->id])->with('success', 'La ressource a bien été sauvegardé');
+        $data = $request->validated();
+        $resource = new Resource();
+        $resource->user_id = Auth::user()->id;
+        $resource->title = $data['title'];
+        $resource->slug = $data['slug'];
+        $resource->price = $data['price'];
+        $resource->link = $data['link'];
+        $resource->category_id = $data['category_id'];
+        $resource->description = $data['description'];
+
+        $resource->image = $data['image'];
+
+        $data['user_id'] = Auth::user()->id;
+        if ($request->method() === "PATCH" && $request->input('like') == 1) {
+            $resource->users()->attach(Auth::user()->id);
+            unset($data['like']);
+        } else {
+            $resource->users()->detach(Auth::user()->id);
+            unset($data['like']);
+        }
+        $resource->save();
+
+        return redirect()->route('resource.show', ['slug' => $resource->slug, 'resource' => $resource->id])->with('success', 'La ressource a bien été sauvegardée');
     }
 
     /**
@@ -131,6 +152,7 @@ class ResouceController extends Controller
      */
     public function edit($resourceID)
     {
+
         $resource = Resource::query()->with(['users'])->where('id', $resourceID)->first();
         return view('resource.edit', [
             'resource' => $resource,
@@ -145,9 +167,31 @@ class ResouceController extends Controller
      */
     public function update(FormResourceRequest $request, Resource $resource)
     {
-        $resource->update($this->extractData($resource, $request));
+        $data = $request->validated();
+        $updatedResource = new Resource();
+        $updatedResource->user_id = Auth::user()->id;
+        $updatedResource->title = $data['title'];
+        $updatedResource->slug = $data['slug'];
+        $updatedResource->price = $data['price'];
+        $updatedResource->link = $data['link'];
+        $updatedResource->likable_id = $resource->id;
+        $updatedResource->category_id = $data['category_id'];
+        $updatedResource->description = $data['description'];
+        if(array_key_exists("image", $data)){
+            $updatedResource->image = $data['image'];
+        }
+
+        $data['user_id'] = Auth::user()->id;
+        if ($request->method() === "PATCH" && $request->input('like') == 1) {
+            $resource->users()->attach(Auth::user()->id);
+            unset($data['like']);
+        } else {
+            $resource->users()->detach(Auth::user()->id);
+            unset($data['like']);
+        }
+        $resource->update();
         $resource->tags()->sync($request->validated('tags'));
-        return redirect()->route('resource.show', ['slug' => $resource->slug, 'resource' => $resource->id])->with('success', 'La ressource a bien été modifié');
+        return redirect()->route('resource.show', ['slug' => $resource->slug, 'resource' => $resource->id])->with('success', 'La ressource a bien été modifiée');
     }
 
     /**
@@ -165,38 +209,6 @@ class ResouceController extends Controller
         } else {
             return to_route('resource.index')->with('success', 'La ressource a bien été ajoutée à vos likes');
         }
-    }
-
-    private function extractData(Resource $resource, FormResourceRequest $request): array
-    {
-        $image = $request->validated('image');
-        $data = $request->validated();
-        //$data = $request->safe();
-        $data['user_id'] = Auth::user()->id;
-        if ($request->method() === "PATCH" && $request->input('like') == 1) {
-            $resource->users()->attach(Auth::user()->id);
-            unset($data['like']);
-        } else {
-            $resource->users()->detach(Auth::user()->id);
-            unset($data['like']);
-        }
-
-        if ($image === null) {
-            return $data;
-        } else {
-            $path = public_path('storage\\resource\\');
-            $name = time() . '.' . $request->image->extension();
-            ResizeImage::make($request->file('image'))
-                ->resize(300, 200)
-                ->save($path . $name);
-            $img = ResizeImage::make('storage\\resource\\' . $name);
-
-            if ($resource->image) {
-                Storage::disk('public')->delete($resource->image);
-            }
-            $data['image'] = 'resource/' . $img->basename;
-        }
-        return $data;
     }
 
     /**

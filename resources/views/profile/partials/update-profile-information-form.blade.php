@@ -53,12 +53,12 @@
             <div class="mt-4 w-full">
                 <div class="flex flex-row align-items-end">
                     <label for="avatar" class="block font-medium text-sm text-gray-700 dark:text-gray-300 mt-4">{{ __('Avatar') }}</label>
-                    <img src="{{$avatar}}" class="m-2" style="width: 50px; height: 50px; border: #4b5563 ridge 2px; border-radius: 50%;">
+                    <img src="{{asset("/storage/user-asset/$user->avatar")}}" class="m-2" style="width: 50px; height: 50px; border: #4b5563 ridge 2px; border-radius: 50%;">
                 </div>
 
 
 
-                <input id="avatar" accept="audio/*" type="file" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 w-full @error('avatar') is-invalid @enderror" name="avatar" required>
+                <input id="avatar" accept="audio/*" type="file" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 w-full @error('avatar') is-invalid @enderror" name="avatar">
 
                 @error('avatar')
                 <span class="invalid-feedback" role="alert">

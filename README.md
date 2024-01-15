@@ -31,9 +31,15 @@ DB_DATABASE=db_soundstore_dev
 DB_HOSTNAME=127.0.0.1
 DB_PORT=3306
 ```
+
+next, download & unzip this folder instead of the public folder in storage/app/
+https://drive.google.com/file/d/1yS8CQ-H1aGMNJsnrnvW321-SrFE9ZgOk/view?usp=drive_link
+(will be improved by a script in next feature)
+
 after you can run
 ```shell
 composer install && npm install && npm run build
+php artisan key:generate
 php artisan migrate:fresh --seed
 npm run dev && php artisan serve
 ```

@@ -9,11 +9,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Storage;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class Track extends Model
 {
+    #region Traits
+
     use HasFactory;
+
+    #endregion
+
+    #region CONST
+
+    public const DEFAULT_PREVIEW_TRACK = 'default_preview_track.jpg';
+    #endregion
+
+    #region ATTRIBUTES
 
     protected $fillable = [
         'title',
@@ -23,7 +37,12 @@ class Track extends Model
         'user_id',
     ];
 
-    public function user(): BelongsTo {
+    #endregion
+
+    #region RELATIONSHIPS
+
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
@@ -39,18 +58,77 @@ class Track extends Model
     }
     */
 
-    public function feedbacks(): HasMany {
+    public function feedbacks(): HasMany
+    {
         return $this->hasMany(Feedback::class);
     }
 
-    public function genres(): BelongsToMany {
+    public function genres(): BelongsToMany
+    {
         return $this->belongsToMany(Genre::class);
     }
 
-    public function entityUrl($entityPath): string {
-        return Storage::url($entityPath);
+    #endregion
+
+
+    #region ACCESSORS AND MUTATORS
+
+    protected function music(): Attribute
+    {
+        return Attribute::make(
+            get: fn(string $value): string => $value,
+            set: function (UploadedFile|string $value, array $attributes): string {
+                // String only to generate seeds
+                if(gettype($value) === 'string'){
+                    return $value;
+                } else {
+                    $music = time() . '.' . $value->extension();
+                    Storage::disk('users-data')->putFileAs($attributes['user_id'] . "/music/", $value, $music);
+
+                    return $attributes['user_id'] . "/music/$music";
+                }
+            }
+        );
     }
 
-    public function scopeRecent(Builder $builder /* Can get optional params to handle conditions below */): Builder {
+    protected function image(): Attribute
+    {
+        return Attribute::make(
+            get: fn(string $value): string => $value != null ? $value : self::DEFAULT_PREVIEW_TRACK,
+            set: function (UploadedFile|string|null $value, array $attributes) {
+                // String only to generate seeds
+                if(gettype($value === "string")){
+                    return $value;
+                } else if ($value === null){
+                    return 'users-data/'. self::DEFAULT_PREVIEW_TRACK;
+                } else {
+                    $resizedImage = Image::make($value)
+                        ->resize(300, 200);
+                    $image = time() . '.' . $value->extension();
+                    Storage::disk('users-data')->put($attributes['user_id'] . "/image/$image", $resizedImage->stream());
+                    return $attributes['user_id'] . "/image/$image";
+                }
+            }
+        );
+    }
+
+
+
+    #endregion
+
+    #region SCOPE
+
+    public function scopeRecent(Builder $builder /* Can get optional params to handle conditions below */): Builder
+    {
         return $builder->orderBy('created_at', 'desc');
-    }}
+    }
+
+    #endregion
+
+    //TODO: Transform it in accessor
+    public function entityUrl($entityPath): string
+    {
+        return Storage::url($entityPath);
+    }
+}
+

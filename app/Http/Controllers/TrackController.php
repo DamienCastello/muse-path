@@ -54,7 +54,20 @@ class TrackController extends Controller
      */
     public function store(FormTrackRequest $request)
     {
-        $track = Track::create($this->extractData(new Track(), $request));
+        $data = $request->validated();
+        $track = new Track;
+        $track->user_id = Auth::user()->id;
+        $track->title = $data['title'];
+        if(array_key_exists("image", $data)){
+            $track->image = $data['image'];
+        }
+
+        $track->music = $data['music'];
+        $track->description = $data['description'];
+        $track->save();
+        if(array_key_exists("genres", $data)){
+            $track->genres()->attach($data['genres']);
+        }
         return to_route('track.show', ['track' => $track->id])->with('success', 'La track a bien été upload');
     }
 
@@ -135,33 +148,6 @@ class TrackController extends Controller
 
 
         return redirect()->route('track.show', ['track' => $trackID])->with('success', 'Feedback envoyé à l\'artiste');
-    }
-
-    private function extractData(Track $track, FormTrackRequest $request): array
-    {
-        $data = $request->validated();
-
-        $image = $request->validated('image');
-
-        if ($image !== null) {
-            $image = $request->validated('image');
-            $resizedImage = ResizeImage::make($request->file('image'))->resize(300, 200);
-            $imageName = time() . '.' . $request->image->extension();
-            $data['image'] = Auth::user()->id . '/image/' . $imageName;
-            $resizedImage->save($imageName);
-            Storage::disk('users-data')->putFileAs(Auth::user()->id . "/image", $resizedImage->basePath(), $imageName);
-        }
-
-
-        $track = $request->validated('music');
-        $musicName = time() . '.' . $request->music->extension();
-        $data['music'] = Auth::user()->id . '/music/' . $musicName;
-        //Storage::disk('public')->putFileAs("music", $track, $musicName);
-        Storage::disk('users-data')->putFileAs(Auth::user()->id . "/music", $track, $musicName);
-
-        $data['user_id'] = Auth::user()->id;
-
-        return $data;
     }
 
     /**
