@@ -7,8 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{asset('fontawesome-free-6.5.1-web/css/all.min.css')}}">
     <link href="{{ asset('/css/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css"/>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
 
     <title>Sandbox  S T 0 R E - @yield('title')</title>
     <!--//////////// Test display react view ///////////
@@ -19,6 +22,13 @@
     <style>
         .container{
             margin-top: 10rem;
+        }
+        i {
+
+            font-size: 20px !important;
+
+            padding: 10px;
+
         }
     </style>
 </head>
@@ -37,15 +47,20 @@ $routeName = request()->route()->getName();
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item mr-3">
             @auth
-            <a @class(["nav-link", "active" => str_starts_with($routeName, 'resource.')]) href="{{ route('resource.admin.create') }}">Ajouter Ressource<span class="sr-only"></span></a>
+            <a @class(["nav-link", "active" => $routeName === 'resource.index']) href="{{ route('resource.index') }}">Ressources<span class="sr-only"></span></a>
             @endauth
         </li>
           <li class="nav-item mr-3">
             @auth
-            <a @class(["nav-link", "active" => str_starts_with($routeName, 'share.')]) href="{{ route('track.index') }}">Partages<span class="sr-only"></span></a>
+            <a @class(["nav-link", "active" => $routeName === "track.index"]) href="{{ route('track.index') }}">Tracks<span class="sr-only"></span></a>
             @endauth
         </li>
-          <li class="nav-item mr-3">
+        <li class="nav-item mr-3">
+            @auth
+            <a @class(["nav-link", "active" => str_starts_with($routeName, 'upload') || $routeName === 'resource.admin.create' || $routeName === 'track.admin.create']) href="{{ route('upload.index') }}">Upload<span class="sr-only"></span></a>
+            @endauth
+        </li>
+        <li class="nav-item mr-3">
             @auth
             <a @class(["nav-link", "active" => str_starts_with($routeName, 'notification.')]) href="{{ route('notification.index') }}">Notifications<span class="sr-only"></span></a>
             @endauth

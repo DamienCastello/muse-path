@@ -33,6 +33,12 @@ Route::prefix("/user")->name('user.')->controller(ProfileController::class)->gro
 
 });
 
+Route::prefix("/upload")->name('upload.')->group(function () {
+    Route::get("/", function () {
+        return view('upload.index');
+    })->name('index');
+});
+
 Route::prefix("/resource")->name('resource.')->controller(ResouceController::class)->group(function () {
     $idRegex = "[0-9]+";
     $slugRegex = "[a-z0-9\-]+";
