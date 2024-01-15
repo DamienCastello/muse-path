@@ -16,7 +16,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Intervention\Image\Facades\Image as ResizeImage;
+
 
 class ProfileController extends Controller
 {
@@ -25,9 +28,14 @@ class ProfileController extends Controller
      */
     public function contact(User $user): RedirectResponse|View
     {
+        $avatar = asset("/storage/".$user->avatar);
+        if($user->avatar !== "soundstore_default_preview_track.jpg"){
+            $avatar = asset("storage/user-asset/$user->avatar");
+        }
 
         return view('user.contact', [
             'user' => $user,
+            'avatar' => $avatar,
             'resource' => request()->resource
         ]);
     }
@@ -76,8 +84,16 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
+
+        $avatar = asset("/storage/".$user->avatar);
+        if($user->avatar !== "soundstore_default_preview_track.jpg"){
+            $avatar = asset("storage/user-asset/$user->avatar");
+        }
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
+            'avatar' => $avatar
         ]);
     }
 
@@ -86,6 +102,33 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        $data = $request->validated();
+
+        $avatar = $request->validated('avatar');
+        if(Auth::user()->avatar !== "soundstore_default_preview_track.jpg"){
+            if(Storage::disk('users-data')->exists(Auth::user()->avatar)){
+                Storage::disk('users-data')->delete(Auth::user()->avatar);
+            }
+        }
+
+        if ($avatar !== null) {
+            $resizedAvatar = ResizeImage::make($request->file('avatar'))->resize(300, 200);
+            $avatarName = time() . '.' . $request->avatar->extension();
+            $data['avatar'] = Auth::user()->id . '/avatar/' . $avatarName;
+            $resizedAvatar->save($avatarName);
+            Storage::disk('users-data')->putFileAs(Auth::user()->id . "/avatar", $resizedAvatar->basePath(), $avatarName);
+            
+            $request->user()->fill($data);
+
+            if ($request->user()->isDirty('email')) {
+                $request->user()->email_verified_at = null;
+            }
+
+            $request->user()->save();
+
+            return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        }
+
         $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {

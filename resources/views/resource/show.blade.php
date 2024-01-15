@@ -21,7 +21,7 @@
         <p class="font-italic mr-3">Ressource créée par : </p>
         <a href="{{ route('user.contact', ['user' => $resource->user, 'resource' => $resource]) }}">
             <img class="rounded-circle shadow-1-strong me-3 mr-3"
-                 src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(21).webp" alt="avatar" width="65"
+                 src="{{$avatar}}" alt="avatar" width="65"
                  height="65"/>
         </a>
         <p class="font-weight-bold">{{$resource->user->name}}</p>
@@ -64,11 +64,11 @@
             <div class="container my-5 py-5 text-dark">
                 <div class="row d-flex justify-content-center">
                     <div class="col-md-11 col-lg-9 col-xl-7">
-
                         @for($i = 0; $i < count($comments); $i++)
+
                             <div class="d-flex flex-start my-2">
                                 <img class="rounded-circle shadow-1-strong me-3"
-                                     src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(27).webp" alt="avatar"
+                                     src="{{asset(str_contains("soundstore_default_preview_track.jpg", $comments[$i]->user->avatar) ? 'storage/'.$comments[$i]->user->avatar : 'storage/user-asset/'.$comments[$i]->user->avatar)}}" alt="avatar"
                                      width="65"
                                      height="65"/>
                                 <div class="card w-100">
@@ -78,18 +78,17 @@
                                             <p class="small">{{$comment_elapsed_time[$i]}}</p>
                                             <p style="width: 1000px;">{{$comments[$i]->content}}</p>
 
-
+                                            <!-- TODO: Implement reply & like comment
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div class="d-flex align-items-center">
-                                                    <!-- TODO: Get like from resource_user (likes) & implement icon -->
                                                     <a href="#!" class="link-muted me-2 mr-3"><i
                                                             class="fas fa-thumbs-up me-1"></i>158 likes</a>
                                                     <a href="#!" class="link-muted"><i
                                                             class="fas fa-thumbs-down me-1"></i>13 unlikes</a>
                                                 </div>
-                                                <!-- TODO: implement reply feature -->
                                                 <a href="#!" class="link-muted"><i class="fas fa-reply me-1"></i>Répondre</a>
                                             </div>
+                                            -->
                                         </div>
                                     </div>
                                 </div>

@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Maga',
             'email' => 'maga@gmail.com',
+            'avatar' => '1/avatar/1704793687.jpg',
             'role' => 'artist',
             'password' => Hash::make('0000')
         ]);
@@ -34,6 +35,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'John',
             'email' => 'john.doe@gmail.com',
+            'avatar' => '2/avatar/1704790776.jpg',
             'role' => 'user',
             'password' => Hash::make('0000')
         ]);
@@ -41,6 +43,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'CatFishBilly',
             'email' => 'cat@gmail.com',
+            'avatar' => 'soundstore_default_preview_track.jpg',
             'role' => 'user',
             'password' => Hash::make('0000')
         ]);
@@ -48,6 +51,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Gamma',
             'email' => 'shinigamma@gmail.com',
+            'avatar' => 'soundstore_default_preview_track.jpg',
             'role' => 'admin',
             'password' => Hash::make('0000')
         ]);

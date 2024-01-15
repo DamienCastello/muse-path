@@ -7,7 +7,7 @@
             <div class="d-flex flex-column justify-content-center align-items-center mb-1">
                 <h1 class="mb-3">{{$user->name}}</h1>
                 <img class="rounded-circle shadow-1-strong me-3 mr-3"
-                        src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(21).webp" alt="avatar" width="200"
+                        src="{{$avatar}}" alt="avatar" width="200"
                         height="200" />
             </div>
             <form action="{{ route('user.contact', ['user' => $user, 'resource' => $resource]) }}" method="post" class="vstack gap-2" enctype="multipart/form-data">
